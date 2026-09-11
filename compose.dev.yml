@@ -1,0 +1,37 @@
+# compose.dev.yml — développement local UNIQUEMENT.
+#
+# N'est jamais utilisé en production : le Compose de production sera généré
+# par ansible-role-grav-site. Ce fichier ne doit jamais devenir une seconde
+# implémentation du déploiement.
+#
+# Volumes séparés (jamais un bind-mount global de user/), conformes au
+# contrat grav-runtime. Identifiants admin de test, en clair, volontairement
+# triviaux et jetables — jamais à réutiliser ailleurs qu'en local.
+
+services:
+  grav:
+    build: .
+    image: grav-platform-docs:dev
+    container_name: grav-platform-docs-dev
+
+    environment:
+      GRAV_ADMIN_USER: admin
+      GRAV_ADMIN_PASSWORD: ChangeMe123
+      GRAV_ADMIN_EMAIL: admin@example.com
+
+    ports:
+      - "8080:80"
+
+    volumes:
+      - pages_data:/var/www/html/user/pages
+      - accounts_data:/var/www/html/user/accounts
+      - data_data:/var/www/html/user/data
+      - images_data:/var/www/html/user/images
+
+    restart: unless-stopped
+
+volumes:
+  pages_data:
+  accounts_data:
+  data_data:
+  images_data:

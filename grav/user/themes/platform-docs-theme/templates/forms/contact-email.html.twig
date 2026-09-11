@@ -1,0 +1,8 @@
+<p>Nouveau message reçu via le formulaire de contact de la documentation de la plateforme.</p>
+
+<p><strong>Nom :</strong> {{ form.value('nom')|e }}</p>
+<p><strong>E-mail :</strong> {{ form.value('email')|e }}</p>
+{% if form.value('telephone') %}
+<p><strong>Téléphone :</strong> {{ form.value('telephone')|e }}</p>
+{% endif %}
+<p><strong>Message :</strong><br>{{ form.value('message')|e|nl2br }}</p>

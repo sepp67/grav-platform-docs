@@ -1,0 +1,19 @@
+name: Platform Docs Theme
+version: 0.1.0
+description: >
+  Thème du site de documentation de la plateforme Grav. Hérite du thème
+  officiel Learn2 (user/themes/learn2, téléchargé et épinglé pendant le
+  build — voir Dockerfile) par chaînage explicite du flux "theme://" (clé
+  streams ci-dessous), sans copier ni modifier les fichiers vendorisés de
+  Learn2. Mécanisme identique à celui utilisé par gites-theme dans
+  projet-gites (chaînage vers quark2), vérifié fonctionnel dans ce même
+  environnement après l'échec constaté de la clé "extends@" — voir
+  docs/architecture.md.
+
+streams:
+  schemes:
+    theme:
+      type: ReadOnlyStream
+      paths:
+        - user://themes/platform-docs-theme
+        - user://themes/learn2

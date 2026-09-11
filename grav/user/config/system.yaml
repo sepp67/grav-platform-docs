@@ -1,0 +1,11 @@
+home:
+  alias: '/accueil'
+
+pages:
+  theme: platform-docs-theme
+
+# Pas de bloc "languages" en v1 (cahier §11) : site en français uniquement,
+# aucune page /en ou /de n'existe encore. Activer languages.supported
+# déclenche la redirection "/" -> "/fr" de Grav (constaté empiriquement)
+# même sans langue additionnelle réellement présente — prématuré tant que
+# l'anglais et l'allemand ne sont pas rédigés.

@@ -1,0 +1,10 @@
+# Configuration de site (non secrète) pour le thème enfant platform-docs-theme.
+#
+# github.position désactive volontairement le mécanisme natif "édition sur
+# GitHub" de Learn2 (templates/partials/github_link.html.twig), qui pointe
+# vers le dépôt de la PAGE COURANTE — non réutilisable comme lien de header
+# global vers lavallee.tech / github.com/sepp67 (cahier §9). Les deux liens
+# globaux sont rendus par un partial dédié : voir
+# templates/partials/header-links.html.twig.
+github:
+  position: off

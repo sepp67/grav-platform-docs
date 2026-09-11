@@ -10,8 +10,16 @@ grav/user/logs/
 grav/user/tmp/
 grav/user/data/
 grav/user/accounts/
+grav/user/images/
+grav/user/.initialized
+
+# Artefacts de build/test locaux
+tests/output/
+tests/**/*.actual
+*.log
 
 # IDE and system
 .vscode/
 .idea/
 .DS_Store
+doc/

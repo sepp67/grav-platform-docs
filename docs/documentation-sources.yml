@@ -1,0 +1,99 @@
+# Manifeste des sources documentées par grav-platform-docs.
+#
+# Champs par dépôt : url, reference (branche ou tag), commit (SHA complet),
+# date_audit (ISO 8601), perimetre (ce qui a réellement été inspecté à ce
+# stade — le Lot indiqué documentera le reste), note (écart ou clarification
+# constaté lors de l'audit).
+#
+# Toute affirmation technique publiée sur ce site doit être traçable à l'une
+# des entrées ci-dessous. Aucun de ces cinq dépôts n'a été modifié pour
+# produire ce manifeste (cahier §3 et §15).
+
+depots_documentes:
+  - nom: grav-runtime
+    url: https://github.com/sepp67/grav-runtime
+    reference: v1.0.4
+    commit: e6e35c37bce2d214b4fb2ca77549f7bec7eed3d4
+    date_audit: "2026-09-11"
+    perimetre: >
+      Dockerfile (version Grav/PHP épinglée, ordre de build), scripts
+      docker/ (entrypoint.sh, seed-init.sh, bootstrap-admin.sh,
+      healthcheck.sh), .github/workflows/docker.yml (déclencheur de
+      publication). Audit détaillé par section de code réservé au Lot 3.
+    note: >
+      Le tag Git v1.0.4 correspond au tag OCI publié "1.0.4" (sans le
+      préfixe "v") sur ghcr.io/sepp67/grav-runtime, conformément au workflow
+      docker.yml (déclenché sur push de tag "vX.Y.Z", tags OCI dérivés par
+      docker/metadata-action à partir du tag Git sans préfixe). La branche
+      main est 9 commits en avance sur ce tag au moment de l'audit et n'est
+      donc pas documentée : projet-lavallee-website, seule image
+      applicative de référence disponible, est elle-même construite sur
+      "grav-runtime:1.0.4", pas sur main.
+
+  - nom: ansible-role-grav-site
+    url: https://github.com/sepp67/ansible-role-grav-site
+    reference: v2.0.0
+    commit: 1339e50bc20257fbb9f21953995c08262ae3043e
+    date_audit: "2026-09-11"
+    perimetre: >
+      README uniquement à ce stade (préflight/Lot 1). Le tag v2.0.0 pointe
+      exactement sur ce commit. Audit complet de tasks/main.yml, des
+      variables et des tests réservé au Lot 4.
+
+  - nom: grav-sites-ops
+    url: https://github.com/sepp67/grav-sites-ops
+    reference: v1.0.0
+    commit: 48b9a59b956f73f10e5602b72a222dd71b4a3f3a
+    date_audit: "2026-09-11"
+    perimetre: >
+      README uniquement à ce stade (préflight/Lot 1). Audit complet réservé
+      au Lot 5.
+    note: >
+      Le tag v1.0.0 existe localement et sur le remote GitHub et pointe
+      exactement sur ce commit. Le README du dépôt affirme au moment de
+      l'audit que ce tag est "prévu, non créé" — écart entre le README et
+      l'état réel du dépôt, signalé ici sans être corrigé dans le dépôt
+      source (hors périmètre de grav-platform-docs, cahier §15).
+
+  - nom: projet-lavallee-website
+    url: https://github.com/sepp67/projet-lavallee-website
+    reference: main
+    commit: c4341ca77270565969e1e801e11a8fda72e5b402
+    date_audit: "2026-09-11"
+    perimetre: >
+      Dockerfile, compose.dev.yml, grav/user/plugins/contact/ (contact.php,
+      contact.yaml), grav/user/pages/06.contact/, grav/user/config/plugins/
+      email.yaml, grav/user/themes/lavallee-theme/templates/contact.html.twig
+      — audit ciblé sur la reprise du mécanisme du formulaire de contact
+      (cahier §10). Audit complet du reste du dépôt réservé au Lot 6.
+    note: >
+      Aucun identifiant SMTP ni mot de passe n'est versionné. Les adresses
+      d'expéditeur et de fallback (contact@lavallee.tech, from/to) sont en
+      revanche présentes en clair dans grav/user/config/plugins/email.yaml
+      — configuration non secrète du dépôt de référence, non reprise ici :
+      grav-platform-docs utilise des adresses provisoires non fonctionnelles
+      (contact@example.invalid).
+
+  - nom: projet-gites
+    url: https://github.com/sepp67/projet-gites
+    reference: main
+    commit: b27d7afa0c86461e94ab8c9ec53c557edb0afd0e
+    date_audit: "2026-09-11"
+    perimetre: >
+      README uniquement à ce stade (préflight/Lot 1). Audit complet réservé
+      au Lot 7.
+
+dependances_externes:
+  - nom: grav-theme-learn2
+    url: https://github.com/getgrav/grav-theme-learn2
+    reference: "1.8.3"
+    commit: 22b7f1e2d4a024b105399f912124fc901f807d7a
+    archive_url: https://github.com/getgrav/grav-theme-learn2/archive/22b7f1e2d4a024b105399f912124fc901f807d7a.tar.gz
+    archive_sha256: e3cb9bf571ed5504675bb26dc1b3308542bd9c8e77fb2e6432c04373afb21449
+    date_audit: "2026-09-11"
+    perimetre: >
+      blueprints.yaml (dépendance déclarée : grav >=1.5.10, satisfaite par
+      Grav 2.0.11), learn2.php (classe Theme vide, aucun code sensible à la
+      version de PHP), templates/partials/base.html.twig et
+      github_link.html.twig (mécanisme "éditer sur GitHub", non réutilisé
+      pour le header — voir docs/architecture.md).

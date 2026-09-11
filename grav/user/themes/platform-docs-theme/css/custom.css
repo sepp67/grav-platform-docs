@@ -1,0 +1,30 @@
+/* Point d'extension natif de Learn2 : chargé via theme://css/custom.css
+   (voir templates/partials/base.html.twig, bloc stylesheets, hérité tel
+   quel de Learn2). Ce fichier ne modifie aucun fichier vendorisé. */
+
+#header-links {
+    position: relative;
+    z-index: 1;
+    float: right;
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    height: 3rem;
+}
+
+#header-links a {
+    font-weight: 600;
+}
+
+.contact-page form label {
+    font-weight: 600;
+}
+
+@media (max-width: 767px) {
+    #header-links {
+        float: none;
+        height: auto;
+        justify-content: flex-start;
+        padding: 0.5rem 0;
+    }
+}

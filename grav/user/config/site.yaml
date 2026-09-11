@@ -1,0 +1,9 @@
+title: 'Documentation — Plateforme Grav'
+author:
+  name: Sébastien Lavallée
+  email: 'contact@example.invalid'
+metadata:
+  description: >
+    Documentation technique de la plateforme de déploiement Grav :
+    grav-runtime, ansible-role-grav-site, grav-sites-ops,
+    projet-lavallee-website et projet-gites.

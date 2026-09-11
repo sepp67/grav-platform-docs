@@ -1,0 +1,30 @@
+.git/
+doc/
+
+# Secrets et comptes — ne doivent jamais entrer dans le contexte de build
+*-private.php
+grav/user/accounts/
+.env
+.env.*
+
+# Données d'exécution locales, jamais destinées à l'image
+grav/user/cache/
+grav/user/logs/
+grav/user/backup/
+grav/user/data/
+grav/user/images/
+grav/user/.initialized
+
+# Artefacts temporaires, archives, IDE
+*.log
+*.tmp
+*.zip
+*.tar
+*.tar.gz
+.vscode/
+.idea/
+.DS_Store
+
+# Sorties générées par les tests locaux (pas les scripts eux-mêmes)
+tests/output/
+tests/**/*.actual
