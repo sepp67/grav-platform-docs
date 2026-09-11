@@ -1,0 +1,17 @@
+# Secrets
+*.vault
+vault.yml
+.env
+grav/user/config/email-private.php
+
+# Grav runtime data
+grav/user/cache/
+grav/user/logs/
+grav/user/tmp/
+grav/user/data/
+grav/user/accounts/
+
+# IDE and system
+.vscode/
+.idea/
+.DS_Store
