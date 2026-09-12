@@ -14,21 +14,40 @@ depots_documentes:
     url: https://github.com/sepp67/grav-runtime
     reference: v1.0.4
     commit: e6e35c37bce2d214b4fb2ca77549f7bec7eed3d4
-    date_audit: "2026-09-11"
+    date_audit: "2026-09-12"
     perimetre: >
-      Dockerfile (version Grav/PHP épinglée, ordre de build), scripts
-      docker/ (entrypoint.sh, seed-init.sh, bootstrap-admin.sh,
-      healthcheck.sh), .github/workflows/docker.yml (déclencheur de
-      publication). Audit détaillé par section de code réservé au Lot 3.
+      Audit complet du tag v1.0.4 pour le Lot 3 (rubrique grav-runtime),
+      réalisé via un worktree Git détaché sur le tag (dépôt source non
+      modifié) : Dockerfile intégral, docker/entrypoint.sh,
+      docker/seed-init.sh, docker/bootstrap-admin.sh, docker/healthcheck.sh,
+      docker/healthz.php, docker/nginx.conf, docker/php-fpm.conf,
+      docker/theme-overrides/quark2/, README.md intégral (487 lignes),
+      .github/workflows/docker.yml, test/config/system.yaml,
+      test/seed/pages/. Complété par une vérification empirique directe :
+      build local du tag (tag distinct "grav-runtime:v1.0.4-audit-local",
+      jamais publié), démarrage, healthcheck, les trois cas de la politique
+      tri-state du bootstrap admin, cycle seed/redémarrage/non-écrasement,
+      UID/GID www-data, et interrogation en direct du registre GHCR
+      (docker manifest inspect) et de l'historique GitHub Actions
+      (gh run list/view) pour les tags OCI réellement publiés. Non
+      ré-exécutés : tests GRAV_ADMIN_TYPE (3quater-3septies), non-écrasement
+      d'un compte existant (3octies), arrêt propre (7), arrêt inattendu de
+      PHP-FPM (8) — voir la rubrique elle-même, page "Tests et CI".
     note: >
       Le tag Git v1.0.4 correspond au tag OCI publié "1.0.4" (sans le
       préfixe "v") sur ghcr.io/sepp67/grav-runtime, conformément au workflow
       docker.yml (déclenché sur push de tag "vX.Y.Z", tags OCI dérivés par
       docker/metadata-action à partir du tag Git sans préfixe). La branche
-      main est 9 commits en avance sur ce tag au moment de l'audit et n'est
-      donc pas documentée : projet-lavallee-website, seule image
-      applicative de référence disponible, est elle-même construite sur
-      "grav-runtime:1.0.4", pas sur main.
+      main est 9 commits en avance sur ce tag au moment de l'audit (README
+      réécrit, plus court) et n'est donc pas documentée :
+      projet-lavallee-website, seule image applicative de référence
+      disponible, est elle-même construite sur "grav-runtime:1.0.4", pas sur
+      main. Écarts constatés lors de l'audit complet, documentés dans la
+      rubrique : test/compose.yml référencé par le README mais absent du
+      tag (gitignored) ; commentaire du Dockerfile renvoyant à un
+      docker/theme-overrides/README.md inexistant ; le workflow publie
+      aussi un tag OCI "latest" (confirmé en direct sur le registre) alors
+      que le contrat d'utilisation l'interdit en production.
 
   - nom: ansible-role-grav-site
     url: https://github.com/sepp67/ansible-role-grav-site
