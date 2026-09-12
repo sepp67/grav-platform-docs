@@ -77,6 +77,67 @@ else
   log "yamllint non disponible — étape informative ignorée"
 fi
 
+# --- SVG : bien formé + surface d'attaque nulle ---------------------------------
+# Vérifie XML bien formé, viewBox présent, aucun <script>, aucun
+# foreignObject, aucun gestionnaire d'évènement (on*=), aucune référence
+# distante (http(s)://, en excluant les deux URI de namespace XML/SVG
+# standard qui n'entraînent aucune requête réseau : xmlns
+# "http://www.w3.org/2000/svg" et xmlns:xlink
+# "http://www.w3.org/1999/xlink"), et aucun chemin absolu local.
+
+log "validation des fichiers SVG (bien formé, sans script, sans référence distante)"
+svg_files="$(find "$REPO_ROOT/grav" -name '*.svg')"
+if [ -z "$svg_files" ]; then
+  log "aucun fichier SVG trouvé — étape ignorée"
+fi
+for f in $svg_files; do
+  rel="${f#"$REPO_ROOT"/}"
+
+  if ! python3 -c "import xml.dom.minidom as m, sys; m.parse(sys.argv[1])" "$f" 2>&1; then
+    log "[FAIL] SVG mal formé : $rel"
+    FAILED=1
+    continue
+  fi
+
+  if ! grep -q 'viewBox=' "$f"; then
+    log "[FAIL] SVG sans viewBox : $rel"
+    FAILED=1
+  fi
+
+  if grep -qi '<script' "$f"; then
+    log "[FAIL] SVG contient <script> : $rel"
+    FAILED=1
+  fi
+
+  if grep -qi 'foreignObject' "$f"; then
+    log "[FAIL] SVG contient foreignObject : $rel"
+    FAILED=1
+  fi
+
+  if grep -qiE 'on[a-z]+[[:space:]]*=|javascript:' "$f"; then
+    log "[FAIL] SVG contient un gestionnaire d'évènement ou un URI javascript: : $rel"
+    FAILED=1
+  fi
+
+  remote_refs="$(grep -oE 'https?://[^"'"'"' ]*' "$f" \
+    | grep -v '^http://www\.w3\.org/2000/svg$' \
+    | grep -v '^http://www\.w3\.org/1999/xlink$' || true)"
+  if [ -n "$remote_refs" ]; then
+    echo "$remote_refs" >&2
+    log "[FAIL] SVG contient une référence distante non whitelistée : $rel"
+    FAILED=1
+  fi
+
+  if grep -qE '/home/|/tmp/|/usr/|/etc/' "$f"; then
+    log "[FAIL] SVG contient un chemin local absolu : $rel"
+    FAILED=1
+  fi
+
+  if [ -z "$remote_refs" ]; then
+    log "SVG OK (bien formé, viewBox, sans script/foreignObject/référence distante) : $rel"
+  fi
+done
+
 # --- git diff --check -----------------------------------------------------------
 
 log "git diff --check (erreurs d'espace dans le diff)"

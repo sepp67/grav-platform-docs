@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" font-family="Helvetica, Arial, sans-serif" role="img" aria-labelledby="title desc">
+  <title id="title">Séquence : modification applicative → image → registre → orchestration → rôle → VM</title>
+  <desc id="desc">Un commit taggé dans une image applicative est construit et publié sur GHCR. Le registre déclaratif de grav-sites-ops est mis à jour puis un playbook invoque ansible-role-grav-site par un tag Git épinglé. Le rôle tire l'image depuis GHCR, rend le Compose, démarre le conteneur, vérifie le healthcheck et le contrôle HTTP, puis écrit l'état déployé dans grav-sites-ops.</desc>
+
+  <defs>
+    <marker id="sarrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#34495E"/>
+    </marker>
+  </defs>
+
+  <style>
+    .lifeline { stroke: #b9c0c9; stroke-width: 1.5; }
+    .actor { fill: #F6F6F6; stroke: #34495E; stroke-width: 1.5; }
+    .actor-label { font-size: 13px; fill: #2C3E50; font-weight: 600; }
+    .msg { stroke: #34495E; stroke-width: 1.5; fill: none; marker-end: url(#sarrow); }
+    .msg-label { font-size: 12px; fill: #2C3E50; }
+    .step { fill: #34495E; }
+    .step-num { font-size: 11px; fill: #fff; font-weight: 700; }
+  </style>
+
+  <!-- Actors -->
+  <g>
+    <rect class="actor" x="20" y="20" width="140" height="46" rx="6"/>
+    <text class="actor-label" x="90" y="48" text-anchor="middle">Développeur /</text>
+    <text class="actor-label" x="90" y="62" text-anchor="middle">opérateur</text>
+
+    <rect class="actor" x="220" y="20" width="160" height="46" rx="6"/>
+    <text class="actor-label" x="300" y="48" text-anchor="middle">Image applicative</text>
+    <text class="actor-label" x="300" y="62" text-anchor="middle">(CI de build)</text>
+
+    <rect class="actor" x="430" y="20" width="120" height="46" rx="6"/>
+    <text class="actor-label" x="490" y="48" text-anchor="middle">GHCR</text>
+
+    <rect class="actor" x="600" y="20" width="160" height="46" rx="6"/>
+    <text class="actor-label" x="680" y="48" text-anchor="middle">grav-sites-ops</text>
+    <text class="actor-label" x="680" y="62" text-anchor="middle">(registre déclaratif)</text>
+
+    <rect class="actor" x="810" y="20" width="180" height="46" rx="6"/>
+    <text class="actor-label" x="900" y="48" text-anchor="middle">ansible-role-</text>
+    <text class="actor-label" x="900" y="62" text-anchor="middle">grav-site</text>
+
+    <rect class="actor" x="1040" y="20" width="140" height="46" rx="6"/>
+    <text class="actor-label" x="1110" y="48" text-anchor="middle">VM cible</text>
+  </g>
+
+  <!-- Lifelines -->
+  <line class="lifeline" x1="90" y1="66" x2="90" y2="850"/>
+  <line class="lifeline" x1="300" y1="66" x2="300" y2="850"/>
+  <line class="lifeline" x1="490" y1="66" x2="490" y2="850"/>
+  <line class="lifeline" x1="680" y1="66" x2="680" y2="850"/>
+  <line class="lifeline" x1="900" y1="66" x2="900" y2="850"/>
+  <line class="lifeline" x1="1110" y1="66" x2="1110" y2="850"/>
+
+  <!-- 1 -->
+  <circle class="step" cx="30" cy="112" r="11"/><text class="step-num" x="30" y="116" text-anchor="middle">1</text>
+  <path class="msg" d="M90,120 L300,120"/>
+  <text class="msg-label" x="95" y="112">commit + tag vX.Y.Z</text>
+
+  <!-- 2 self-call: build -->
+  <circle class="step" cx="230" cy="172" r="11"/><text class="step-num" x="230" y="176" text-anchor="middle">2</text>
+  <path class="msg" d="M300,160 C 360,160 360,190 300,190"/>
+  <text class="msg-label" x="365" y="180">build (FROM grav-runtime épinglé)</text>
+
+  <!-- 3 -->
+  <circle class="step" cx="230" cy="222" r="11"/><text class="step-num" x="230" y="226" text-anchor="middle">3</text>
+  <path class="msg" d="M300,230 L490,230"/>
+  <text class="msg-label" x="305" y="222">publish image :vX.Y.Z</text>
+
+  <!-- 4 -->
+  <circle class="step" cx="30" cy="282" r="11"/><text class="step-num" x="30" y="286" text-anchor="middle">4</text>
+  <path class="msg" d="M90,290 L680,290"/>
+  <text class="msg-label" x="95" y="282">met à jour version/digest déclaré (commit du registre)</text>
+
+  <!-- 5 -->
+  <circle class="step" cx="30" cy="342" r="11"/><text class="step-num" x="30" y="346" text-anchor="middle">5</text>
+  <path class="msg" d="M90,350 L680,350"/>
+  <text class="msg-label" x="95" y="342">déclenche playbook deploy-site.yml (sélection + verrou)</text>
+
+  <!-- 6 -->
+  <circle class="step" cx="590" cy="402" r="11"/><text class="step-num" x="590" y="406" text-anchor="middle">6</text>
+  <path class="msg" d="M680,410 L900,410"/>
+  <text class="msg-label" x="685" y="402">invoque le rôle — requirements.yml, tag v2.0.0 (variables traduites)</text>
+
+  <!-- 7 -->
+  <circle class="step" cx="1000" cy="462" r="11"/><text class="step-num" x="1000" y="466" text-anchor="middle">7</text>
+  <path class="msg" d="M900,470 L490,470"/>
+  <text class="msg-label" x="495" y="462">pull image (référence déclarée : version ou digest)</text>
+
+  <!-- 8 -->
+  <circle class="step" cx="1000" cy="522" r="11"/><text class="step-num" x="1000" y="526" text-anchor="middle">8</text>
+  <path class="msg" d="M900,530 L1110,530"/>
+  <text class="msg-label" x="905" y="522">rend le Compose, démarre / redémarre le conteneur</text>
+
+  <!-- 9 -->
+  <circle class="step" cx="1000" cy="582" r="11"/><text class="step-num" x="1000" y="586" text-anchor="middle">9</text>
+  <path class="msg" d="M900,590 L1110,590"/>
+  <text class="msg-label" x="905" y="582">healthcheck Docker, puis contrôle HTTP applicatif</text>
+
+  <!-- 10 -->
+  <circle class="step" cx="790" cy="642" r="11"/><text class="step-num" x="790" y="646" text-anchor="middle">10</text>
+  <path class="msg" d="M900,650 L680,650"/>
+  <text class="msg-label" x="685" y="642">écrit l'état déployé + journal append-only</text>
+
+  <text x="30" y="800" font-size="12" fill="#5a6472">Étape 5 ignorée si l'intention est "stop" ; étapes 8-9 sautées si l'état demandé est "stopped".</text>
+</svg>

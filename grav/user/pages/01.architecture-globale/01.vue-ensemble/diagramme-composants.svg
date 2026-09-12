@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" font-family="Helvetica, Arial, sans-serif" role="img" aria-labelledby="title desc">
+  <title id="title">Diagramme de composants de la plateforme</title>
+  <desc id="desc">grav-runtime sert de base à projet-lavallee-website et projet-gites, publiées sur GHCR. grav-sites-ops invoque ansible-role-grav-site par un tag Git épinglé ; le rôle tire l'image depuis GHCR et déploie le conteneur sur la VM cible. control-repository gère séparément le reverse proxy, TLS et DNS, sans automatisation vers la chaîne de déploiement.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#34495E"/>
+    </marker>
+    <marker id="arrow-dashed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8f98"/>
+    </marker>
+  </defs>
+
+  <style>
+    .box { fill: #F6F6F6; stroke: #34495E; stroke-width: 1.5; }
+    .box-role { fill: #E4EAF0; stroke: #34495E; stroke-width: 1.5; }
+    .label { font-size: 16px; fill: #2C3E50; font-weight: 600; }
+    .sublabel { font-size: 12px; fill: #5a6472; }
+    .edge { stroke: #34495E; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    .edge-dashed { stroke: #8a8f98; stroke-width: 1.5; fill: none; stroke-dasharray: 6 5; marker-end: url(#arrow-dashed); }
+    .edge-label { font-size: 12px; fill: #34495E; }
+  </style>
+
+  <!-- grav-runtime -->
+  <rect class="box" x="370" y="20" width="260" height="64" rx="8"/>
+  <text class="label" x="500" y="46" text-anchor="middle">grav-runtime</text>
+  <text class="sublabel" x="500" y="66" text-anchor="middle">image Docker générique</text>
+
+  <!-- projet-lavallee-website / projet-gites -->
+  <rect class="box" x="110" y="150" width="270" height="64" rx="8"/>
+  <text class="label" x="245" y="176" text-anchor="middle">projet-lavallee-website</text>
+  <text class="sublabel" x="245" y="196" text-anchor="middle">image applicative (FROM épinglé)</text>
+
+  <rect class="box" x="620" y="150" width="270" height="64" rx="8"/>
+  <text class="label" x="755" y="176" text-anchor="middle">projet-gites</text>
+  <text class="sublabel" x="755" y="196" text-anchor="middle">image applicative (FROM épinglé)</text>
+
+  <!-- GHCR -->
+  <rect class="box" x="340" y="270" width="320" height="64" rx="8"/>
+  <text class="label" x="500" y="296" text-anchor="middle">GHCR</text>
+  <text class="sublabel" x="500" y="316" text-anchor="middle">registre d'images versionnées</text>
+
+  <!-- grav-sites-ops -->
+  <rect class="box" x="60" y="390" width="300" height="64" rx="8"/>
+  <text class="label" x="210" y="416" text-anchor="middle">grav-sites-ops</text>
+  <text class="sublabel" x="210" y="436" text-anchor="middle">registre déclaratif du parc</text>
+
+  <!-- ansible-role-grav-site -->
+  <rect class="box-role" x="540" y="390" width="320" height="64" rx="8"/>
+  <text class="label" x="700" y="416" text-anchor="middle">ansible-role-grav-site</text>
+  <text class="sublabel" x="700" y="436" text-anchor="middle">rôle atomique (sepp67.grav_site)</text>
+
+  <!-- VM cible -->
+  <rect class="box" x="340" y="510" width="320" height="64" rx="8"/>
+  <text class="label" x="500" y="536" text-anchor="middle">VM cible</text>
+  <text class="sublabel" x="500" y="556" text-anchor="middle">conteneur applicatif en fonctionnement</text>
+
+  <!-- control-repository -->
+  <rect class="box" x="720" y="510" width="260" height="64" rx="8" stroke-dasharray="4 3"/>
+  <text class="label" x="850" y="536" text-anchor="middle" font-size="14">control-repository</text>
+  <text class="sublabel" x="850" y="556" text-anchor="middle">reverse proxy · TLS · DNS</text>
+
+  <!-- Edges: grav-runtime -> apps -->
+  <path class="edge" d="M440,84 L280,150"/>
+  <text class="edge-label" x="300" y="120">FROM épinglé</text>
+  <path class="edge" d="M560,84 L720,150"/>
+  <text class="edge-label" x="640" y="120">FROM épinglé</text>
+
+  <!-- Edges: apps -> GHCR -->
+  <path class="edge" d="M280,214 L440,270"/>
+  <text class="edge-label" x="270" y="250">build + publish</text>
+  <path class="edge" d="M720,214 L560,270"/>
+  <text class="edge-label" x="660" y="250">build + publish</text>
+
+  <!-- Edge: grav-sites-ops -> ansible-role-grav-site -->
+  <path class="edge" d="M360,422 L540,422"/>
+  <text class="edge-label" x="370" y="412">invoque — requirements.yml, tag v2.0.0</text>
+
+  <!-- Edge: ansible-role-grav-site -> GHCR (pull au déploiement) -->
+  <path class="edge" d="M760,390 C 800,340 700,320 660,300"/>
+  <text class="edge-label" x="775" y="360">pull (référence déclarée)</text>
+
+  <!-- Edge: ansible-role-grav-site -> VM cible -->
+  <path class="edge" d="M660,454 L540,510"/>
+  <text class="edge-label" x="545" y="490">déploie / met à jour le conteneur</text>
+
+  <!-- Edge: control-repository -> VM cible (manuel, hors chaîne) -->
+  <path class="edge-dashed" d="M770,542 L660,542"/>
+  <text class="edge-label" x="640" y="605" text-anchor="end">manuel, sans automatisation vers la chaîne de déploiement</text>
+</svg>

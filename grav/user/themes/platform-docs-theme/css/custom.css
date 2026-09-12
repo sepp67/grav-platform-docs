@@ -20,6 +20,25 @@
     font-weight: 600;
 }
 
+/* Learn2 (css-compiled/theme.css) ne borne ni les images, ni les tableaux,
+   ni les blocs de code : sans cette règle, un diagramme SVG large ou un
+   tableau de référence peut faire déborder la page entière sur mobile
+   (VISUAL-001, docs/testing.md). Les diagrammes du Lot 2 sont le premier
+   contenu réel à en dépendre. */
+#body-inner img {
+    max-width: 100%;
+    height: auto;
+}
+
+#body-inner table {
+    display: block;
+    overflow-x: auto;
+}
+
+#body-inner pre {
+    overflow-x: auto;
+}
+
 @media (max-width: 767px) {
     #header-links {
         float: none;

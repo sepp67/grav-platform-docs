@@ -36,9 +36,14 @@ depots_documentes:
     commit: 1339e50bc20257fbb9f21953995c08262ae3043e
     date_audit: "2026-09-11"
     perimetre: >
-      README uniquement à ce stade (préflight/Lot 1). Le tag v2.0.0 pointe
-      exactement sur ce commit. Audit complet de tasks/main.yml, des
-      variables et des tests réservé au Lot 4.
+      README.md (contrat d'entrée, variables publiques, "Contrat réseau",
+      "Ce que le rôle ne fait jamais") et tasks/main.yml (enchaînement des
+      fichiers de tâches inclus : assert.yml, admin_guard.yml, docker.yml/
+      verify_docker.yml, directories.yml, secrets.yml, deploy.yml,
+      healthcheck.yml, verify_admin_account.yml, version.yml) — audit ciblé
+      pour la rubrique Architecture globale (Lot 2) : chronologie de haut
+      niveau et frontière réseau/reverse-proxy. Contenu détaillé de chaque
+      fichier de tâches, invariants, blocs rescue et tests réservé au Lot 4.
 
   - nom: grav-sites-ops
     url: https://github.com/sepp67/grav-sites-ops
@@ -46,7 +51,15 @@ depots_documentes:
     commit: 48b9a59b956f73f10e5602b72a222dd71b4a3f3a
     date_audit: "2026-09-11"
     perimetre: >
-      README uniquement à ce stade (préflight/Lot 1). Audit complet réservé
+      README.md, requirements.yml (dépendance épinglée vers
+      ansible-role-grav-site, tag v2.0.0), playbooks/deploy-site.yml,
+      docs/ARCHITECTURE.md, docs/CONTRAT-ARCHITECTURAL.md (§2.1 responsabilités,
+      §3.4 et §9 frontière avec le rôle, §9.3 table de traduction des
+      variables), docs/REGISTRY-SCHEMA.md (champs du registre déclaratif),
+      docs/GOVERNANCE.md ("Gates séparés", "Bornage des mutations") — audit
+      ciblé pour la rubrique Architecture globale (Lot 2) : RACI, contrats
+      d'interface, frontière avec le reverse proxy. Audit complet des
+      playbooks restants, de tests/ et de la matrice de conformité réservé
       au Lot 5.
     note: >
       Le tag v1.0.0 existe localement et sur le remote GitHub et pointe
@@ -78,10 +91,16 @@ depots_documentes:
     url: https://github.com/sepp67/projet-gites
     reference: main
     commit: b27d7afa0c86461e94ab8c9ec53c557edb0afd0e
-    date_audit: "2026-09-11"
+    date_audit: "2026-09-12"
     perimetre: >
-      README uniquement à ce stade (préflight/Lot 1). Audit complet réservé
-      au Lot 7.
+      README.md, et listing (sans lecture de contenu détaillée) des fichiers
+      de grav/user/themes/gites-theme/ (gites-theme.yaml — mécanisme de
+      chaînage de flux vers quark2 — et templates/, notamment
+      gerer-disponibilites.html.twig, gite-photos.html.twig,
+      partials/galerie-*.html.twig) — audit ciblé pour la rubrique
+      Architecture globale (Lot 2) et pour valider le mécanisme de thème
+      enfant repris par grav-platform-docs. Audit complet du reste du dépôt
+      (plugins, pages, tests, CI) réservé au Lot 7.
 
 dependances_externes:
   - nom: grav-theme-learn2
