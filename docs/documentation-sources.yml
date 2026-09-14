@@ -127,24 +127,80 @@ depots_documentes:
     url: https://github.com/sepp67/grav-sites-ops
     reference: v1.0.0
     commit: 48b9a59b956f73f10e5602b72a222dd71b4a3f3a
-    date_audit: "2026-09-11"
+    date_audit: "2026-09-14 (Lot 5), complete le 2026-09-14 (Lot 5.1)"
+    methode: >
+      Worktree Git détaché sur le tag v1.0.0 (git worktree add --detach),
+      dépôt source non modifié. Aucun paquet système installé, aucune VM
+      réelle contactée. Tests exécutés localement : make test-reproducible
+      (35/35 réussis, 0 échec, GSO-T15 non exécuté — voir note fonctionnelle),
+      rejoué une seconde fois au Lot 5.1 (même résultat). make matrix-check
+      exécuté dans le worktree d'audit (OK, worktree resté propre) ; make
+      matrix (génération) testé séparément dans un second worktree
+      temporaire jetable, diff vide contre docs/COMPLIANCE-MATRIX.md commité,
+      worktree temporaire supprimé après contrôle.
+    perimetre_lu_integralement: >
+      README.md, CHANGELOG.md (lignes 1-80/513), Makefile, ansible.cfg,
+      requirements.yml, .github/workflows/ci.yml, docs/ACCEPTANCE.md,
+      docs/VERSIONING.md, docs/ARCHITECTURE.md, docs/GOVERNANCE.md,
+      docs/REGISTRY-SCHEMA.md, docs/VAULT-SCHEMA.md, docs/LIFECYCLE-SCHEMA.md,
+      docs/OPERATIONS.md, docs/TESTING.md, docs/TEST-RESULTS.md,
+      docs/MIGRATION.md, inventories/example/ (inventaire, registre,
+      vault.yml.example), registry/retired-sites.yml,
+      registry/reactivated-sites.yml, playbooks/deploy-site.yml,
+      playbooks/restart-site.yml, playbooks/stop-site.yml,
+      playbooks/check-site.yml, playbooks/check-all.yml,
+      playbooks/_shared/mutate.yml, playbooks/_shared/translate.yml,
+      playbooks/_shared/observe.yml, scripts/validate-target.sh,
+      scripts/preflight.sh, scripts/deploy.sh, scripts/restart-site.sh,
+      scripts/stop-site.sh, scripts/check-site.sh, scripts/check-all.sh,
+      scripts/lifecycle-history-check.sh, scripts/lib/gso_validate.py (525
+      lignes), scripts/lib/gso_classify.py (232 lignes),
+      scripts/lib/site-mutation.sh (relu ligne à ligne au Lot 5.1 pour le
+      mécanisme de verrou), scripts/lib/site-check.sh,
+      tests/run-all.sh, tests/gso-t23-no-control-repository.sh (échantillon),
+      tests/lib/spy-role/sepp67.grav_site/tasks/main.yml (échantillon),
+      scripts/lib/gso_lifecycle.py (473 lignes, Lot 5.1),
+      scripts/lib/gso_compliance.py (301 lignes, Lot 5.1),
+      docs/COMPLIANCE-MATRIX.md (257 lignes en intégralité, Lot 5.1),
+      tests/l8-history-append-only.sh (Lot 5.1, intégral),
+      Makefile (relu pour les appels directs à gso_lifecycle.py/
+      gso_compliance.py, Lot 5.1) ; grep ciblé (Lot 5.1) des appels à ces
+      deux scripts dans tests/l11-acceptance-guards.sh,
+      tests/l10-ci-blocking.sh, tests/gso-t21-retrait-non-destructif.sh,
+      tests/gso-t22-disjonction-registres.sh.
+    perimetre_skimme_non_lu_ligne_a_ligne: >
+      docs/CONTRAT-ARCHITECTURAL.md (contrat lui-même — seuls les intitulés
+      d'exigences, extraits par expression régulière, et des citations
+      ponctuelles reprises par docs/GOVERNANCE.md/ACCEPTANCE.md ont été
+      consultés, pas une lecture intégrale) ; les 24 tests gso-t*.sh et
+      ~12 tests l*-*.sh restants (exécutés et leur résultat observé, mais
+      regroupés par garantie testée plutôt que lus individuellement en
+      intégralité — cahier Lot 5 autorise ce regroupement, jamais une
+      déduction du comportement depuis le seul nom).
     perimetre: >
-      README.md, requirements.yml (dépendance épinglée vers
-      ansible-role-grav-site, tag v2.0.0), playbooks/deploy-site.yml,
-      docs/ARCHITECTURE.md, docs/CONTRAT-ARCHITECTURAL.md (§2.1 responsabilités,
-      §3.4 et §9 frontière avec le rôle, §9.3 table de traduction des
-      variables), docs/REGISTRY-SCHEMA.md (champs du registre déclaratif),
-      docs/GOVERNANCE.md ("Gates séparés", "Bornage des mutations") — audit
-      ciblé pour la rubrique Architecture globale (Lot 2) : RACI, contrats
-      d'interface, frontière avec le reverse proxy. Audit complet des
-      playbooks restants, de tests/ et de la matrice de conformité réservé
-      au Lot 5.
+      Audit complet pour la rubrique 04.grav-sites-ops (Lot 5 + Lot 5.1) :
+      cinq chronologies (validation de cible, mutation, contrôle d'un site,
+      contrôle du parc, cycle de vie documentaire), table de traduction
+      registre+vault → interface du rôle, matrice tests/garanties, procédure
+      de migration complète, analyse complète de la matrice de conformité
+      (204 exigences) et des deux validateurs de cycle de vie/conformité.
+      Remplace et étend l'audit ciblé du Lot 2 (RACI, contrats d'interface,
+      frontière avec le reverse proxy).
     note: >
       Le tag v1.0.0 existe localement et sur le remote GitHub et pointe
-      exactement sur ce commit. Le README du dépôt affirme au moment de
-      l'audit que ce tag est "prévu, non créé" — écart entre le README et
-      l'état réel du dépôt, signalé ici sans être corrigé dans le dépôt
-      source (hors périmètre de grav-platform-docs, cahier §15).
+      exactement sur ce commit. Le README, le CHANGELOG et
+      docs/ACCEPTANCE.md de ce même commit affirment que ce tag est "prévu,
+      non créé". L'écart est historiquement explicable (documents finalisés
+      avant la création du tag, ensuite posé sur le même commit), mais reste
+      une incohérence documentaire réelle dans v1.0.0 : quiconque consulte
+      le tag voit une affirmation désormais fausse. Écart documenté en
+      détail dans 04.grav-sites-ops/11.reference (quatre volets distincts :
+      explication historique, état Git observé, effet pour le lecteur,
+      absence de correction du dépôt source), non corrigé dans le dépôt
+      source (hors périmètre de grav-platform-docs, cahier §15). GSO-T15
+      (déploiement Docker réel) n'a pas été réexécuté pour ce lot ; la
+      seule preuve disponible (docs/TEST-RESULTS.md) porte sur un commit
+      antérieur au tag audité.
 
   - nom: projet-lavallee-website
     url: https://github.com/sepp67/projet-lavallee-website
