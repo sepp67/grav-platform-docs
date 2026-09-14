@@ -53,16 +53,75 @@ depots_documentes:
     url: https://github.com/sepp67/ansible-role-grav-site
     reference: v2.0.0
     commit: 1339e50bc20257fbb9f21953995c08262ae3043e
-    date_audit: "2026-09-11"
+    date_audit: "2026-09-12"
     perimetre: >
-      README.md (contrat d'entrée, variables publiques, "Contrat réseau",
-      "Ce que le rôle ne fait jamais") et tasks/main.yml (enchaînement des
-      fichiers de tâches inclus : assert.yml, admin_guard.yml, docker.yml/
+      Audit complet du tag v2.0.0 (Lot 4, complété au Lot 4.1), réalisé
+      via un worktree Git détaché sur le tag (dépôt source non modifié).
+      Lot 4 : README.md intégral (579 lignes), CHANGELOG.md (entrée 2.0.0),
+      meta/main.yml, defaults/main.yml, vars/main.yml, tous les fichiers de
+      tasks/ (main.yml, assert.yml, admin_guard.yml, docker.yml,
       verify_docker.yml, directories.yml, secrets.yml, deploy.yml,
-      healthcheck.yml, verify_admin_account.yml, version.yml) — audit ciblé
-      pour la rubrique Architecture globale (Lot 2) : chronologie de haut
-      niveau et frontière réseau/reverse-proxy. Contenu détaillé de chaque
-      fichier de tâches, invariants, blocs rescue et tests réservé au Lot 4.
+      healthcheck.yml, clear_failure_diagnostic.yml,
+      verify_admin_account.yml, version.yml), templates/docker-compose.yml.j2,
+      .github/workflows/ci.yml, inventories/example/, examples/site.yml.example.
+      Lot 4.1, sources supplémentaires lues intégralement : docs/MIGRATION.md,
+      docs/CONFORMITE-REQ.md (63 exigences REQ-*), docs/TEST-RESULTS.md
+      (matrice T01-T23), playbooks/check.yml, playbooks/deploy.yml,
+      restart.yml, stop.yml, Makefile, requirements.yml,
+      templates/grav.env.j2, templates/deployed_state.yml.j2,
+      molecule/*/molecule.yml (5 scénarios), molecule/*/converge.yml
+      (5 scénarios), molecule/deploy/prepare.yml, molecule/install/verify.yml,
+      tests/test_assertions.yml (comptage exact : 46 scénarios),
+      tests/test_consume_via_requirements.yml (en-tête et logique).
+      Complété par l'observation en direct de l'historique GitHub Actions
+      (gh run list/view) pour le run ayant publié le tag v2.0.0 (8 jobs,
+      tous success, 33888725974), et par l'exécution locale réelle (Lot
+      4.1) de : ansible-lint (commande exacte du README/Makefile, 0
+      échec/0 avertissement), ansible-playbook --syntax-check sur les 4
+      playbooks, ansible-inventory sur l'inventaire d'exemple, et 7
+      playbooks de tests/ sans Docker (test_assertions.yml,
+      test_traceability.yml, test_failure_log_lifecycle.yml,
+      test_admin_guard.yml, test_persistence_untouched.yml,
+      test_no_secret_leak.yml, test_consume_via_requirements.yml — tous
+      PASS). Non lus en détail : les fichiers verify.yml des scénarios
+      Molecule autres qu'install, les fichiers tests/_*.yml (helpers
+      partagés). Non exécutés : Molecule (non installé dans l'environnement
+      d'audit), les tests fonctionnels nécessitant Docker natif ou un
+      déploiement réel (test.yml, test_env_encoding.yml,
+      test_standalone.yml) — voir la rubrique, page "Tests et CI", pour la
+      distinction exacte entre comportement lu dans le code, test présent,
+      test exécuté, et CI observée.
+    note: >
+      Aucun écart majeur constaté entre README, contrat et code pour le
+      périmètre audité (contrairement à grav-runtime) : la séquence décrite
+      par README "Ce que fait le rôle" correspond exactement à
+      tasks/main.yml et aux fichiers qu'il importe. Deux écarts de
+      précision trouvés au Lot 4.1 : (1) le README annonce "~35 scénarios"
+      pour tests/test_assertions.yml alors que le code et
+      docs/TEST-RESULTS.md en comptent 46 (confirmé par exécution réelle) ;
+      (2) docs/TEST-RESULTS.md documente le run CI T04-T08 sur le commit
+      105e085 (branche refonte/lot-9-release-preparation), antérieur au
+      commit du tag v2.0.0 lui-même — sa section "Run final du HEAD
+      définitif" est un espace réservé non rempli. Le run propre au tag
+      (33888725974, observé en direct par ce Lot) est vert sur ses 8 jobs,
+      mais son détail n'est pas consigné dans docs/TEST-RESULTS.md. Une
+      première version de ce Lot avait imprécisément décrit
+      tasks/admin_guard.yml comme "sauté si grav_state == stopped" dans son
+      ensemble, puis, en 4.1, comme ayant "ses tâches d'observation
+      s'exécutant toujours" — corrigé une seconde fois avec le détail
+      exact : le stat sur grav_accounts_directory s'exécute toujours ; le
+      find n'est joué que si ce stat constate un répertoire existant de
+      type directory ; le calcul de _grav_admin_account_present s'exécute
+      toujours (avec default(0) si le find a été sauté) ; le calcul de
+      _grav_admin_bootstrap_count s'exécute toujours ; seule l'assertion
+      finale ("compte présent ou bootstrap complet") porte
+      when: grav_state != 'stopped'. La validation tri-state (assert.yml)
+      s'applique même à l'état stopped. De même, grav_digest n'est pas lu
+      "uniquement" par vars/main.yml : defaults/main.yml (définition),
+      tasks/assert.yml (validation de forme), vars/main.yml (calcul de
+      _grav_effective_reference), templates/deployed_state.yml.j2
+      (écriture du champ) et tasks/version.yml (comparaison à l'état
+      précédent) le lisent tous directement, chacun pour un usage propre.
 
   - nom: grav-sites-ops
     url: https://github.com/sepp67/grav-sites-ops
