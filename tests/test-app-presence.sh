@@ -39,11 +39,18 @@ echo "$home_body" | grep -qi "Documentation de la plateforme Grav" \
   || fail "page d'accueil : contenu attendu absent"
 log "page d'accueil : contenu réel présent"
 
-for section in "Architecture globale" "grav-runtime" "ansible-role-grav-site" "grav-sites-ops" "projet-lavallee-website" "projet-gites" "Contact"; do
+for section in "Architecture globale" "grav-runtime" "ansible-role-grav-site" "grav-sites-ops" "projet-lavallee-website" "projet-gites" "Glossaire commun"; do
   echo "$home_body" | grep -qi "$section" \
     || fail "navigation : rubrique '$section' absente de la page rendue"
 done
-log "navigation : les sept rubriques de premier niveau sont présentes"
+log "navigation : les huit rubriques de premier niveau visibles sont présentes"
+
+# Contact reste une page fonctionnelle (voir plus bas), mais volontairement
+# masquée du sommaire (visible: false) depuis le Lot 8 — Glossaire commun
+# occupe la dernière position visible à sa place.
+echo "$home_body" | grep -qi ">Contact<" \
+  && fail "Contact apparaît dans le menu (visible: false attendu depuis le Lot 8)"
+log "Contact absent du menu (page fonctionnelle cachée du sommaire)"
 
 # Vérification stricte par lien : href absolu exact, target="_blank" et
 # rel="noopener noreferrer" sur la même balise <a> (pas une simple présence

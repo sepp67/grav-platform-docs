@@ -11,7 +11,7 @@ Rien, au sens d'une dépendance de construction : `grav-sites-ops` ne
 construit ni ne consomme aucune image. Sa seule dépendance **déclarée**
 est le rôle `sepp67.grav_site`, épinglé par tag Git dans `requirements.yml`
 (`version: "v2.0.0"`) — exactement le même tag audité au [Lot
-4](../03.ansible-role-grav-site).
+4](../../03.ansible-role-grav-site).
 
 ## En aval
 

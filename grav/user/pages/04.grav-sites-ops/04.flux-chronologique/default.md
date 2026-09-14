@@ -36,7 +36,7 @@ joignabilité). `validate` seul ne contacte jamais de machine.
 cible absente, un jeton global, une cible qui résout plusieurs hôtes, une
 cible retirée, sont chacun un chemin d'échec **distinct** dans
 `validate_selector()`, chacun couvert par une entrée de `GSO-T*` dédiée
-(voir [Tests et CI](08.tests-et-ci)).
+(voir [Tests et CI](../08.tests-et-ci)).
 
 ## B. Mutation d'un site (`deploy` | `restart` | `stop`)
 
@@ -52,7 +52,7 @@ Chemin : `scripts/{deploy,restart-site,stop-site}.sh` →
 | 4 | Invocation `ansible-playbook … --limit "$SITE"` sous le fd 9 encore ouvert | `site-mutation.sh` (`exec ansible-playbook …`) | le `exec` remplace le processus : le verrou est libéré par l'OS à la sortie du process ansible-playbook, quelle qu'en soit la cause |
 | 5 | Assertion structurelle du playbook : un seul hôte, égal à `inventory_hostname`, jamais `all`/groupe/multiple | `_shared/mutate.yml` tâche 1 | `ansible.builtin.assert` |
 | 6 | **Second préflight**, structurel, indépendant du premier (défense en profondeur) | `_shared/mutate.yml` tâche 2 → `gso_validate.py preflight` | `delegate_to: localhost`, `check_mode: false`, `no_log: true`, `failed_when: rc != 0` |
-| 7 | Traduction fermée registre + vault → `grav_*` | `_shared/mutate.yml` tâche 3 → `_shared/translate.yml` | voir [Configuration et interfaces](06.configuration-et-interfaces) pour la table complète |
+| 7 | Traduction fermée registre + vault → `grav_*` | `_shared/mutate.yml` tâche 3 → `_shared/translate.yml` | voir [Configuration et interfaces](../06.configuration-et-interfaces) pour la table complète |
 | 8 | Invocation du rôle, exactement une fois | `_shared/mutate.yml` tâche 4 | `include_role: name: sepp67.grav_site` |
 | 9 | Premier contact réseau réel avec la VM cible | **à l'intérieur du rôle** (hors périmètre de ce dépôt, voir Lot 4) | ce dépôt ne s'y substitue jamais |
 | 10 | Libération du verrou | implicite, à la sortie du process `ansible-playbook` (étape 4) | pas une étape explicite du code — propriété du `exec` |
@@ -60,8 +60,8 @@ Chemin : `scripts/{deploy,restart-site,stop-site}.sh` →
 
 **Point de vigilance** : `stop` ne retire jamais un site du parc — il ne
 fait que porter `grav_state: stopped` au rôle (voir [Vue
-d'ensemble](01.vue-ensemble), refus n°7, et [Adopter et
-étendre](10.adopter-et-etendre) pour la différence avec le retrait
+d'ensemble](../01.vue-ensemble), refus n°7, et [Adopter et
+étendre](../10.adopter-et-etendre) pour la différence avec le retrait
 documentaire).
 
 **Vérification du verrou au niveau shell (Lot 5.1, relecture ligne à ligne
@@ -153,7 +153,7 @@ variables Ansible (confirmé par grep sur `playbooks/` : aucune référence
 à ces chemins). Les scripts `gso_lifecycle.py`/`lifecycle-history-check.sh`
 **valident** une procédure déjà exécutée manuellement ; ils ne
 l'exécutent jamais eux-mêmes, ne suppriment ni ne redéploient aucun site
-(voir [Vue d'ensemble](01.vue-ensemble), refus n°7-8, et
+(voir [Vue d'ensemble](../01.vue-ensemble), refus n°7-8, et
 `docs/LIFECYCLE-SCHEMA.md`, section « Ce que le validateur ne fait
 jamais » — confirmé par lecture intégrale du fichier au Lot 5.1, aucun
 `open(..., 'w')`, aucun `subprocess`, aucune primitive Ansible).

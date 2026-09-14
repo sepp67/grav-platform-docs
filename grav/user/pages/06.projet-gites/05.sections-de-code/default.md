@@ -17,7 +17,7 @@ même honeypot), avec **deux différences structurelles** :
   une chaîne vide mais jamais littéralement absente). Le corps de la
   fonction gère explicitement le cas d'une chaîne vide (`!$giteRoute` est
   vrai pour `''`, retourne le fallback), donc ce détail reste sans
-  conséquence observée dans ce dépôt — voir [Référence](11.reference) pour
+  conséquence observée dans ce dépôt — voir [Référence](../11.reference) pour
   la discussion complète du routage.
 - **Validation domaine additionnelle** dans `onFormValidationProcessed()` :
   si `date_arrivee` et `date_depart` sont toutes deux renseignées et que
@@ -85,7 +85,7 @@ supposée depuis le gabarit.
 ## `grav/user/themes/gites-theme/gites-theme.yaml`
 
 Chaînage vers `quark2` via `streams.schemes.theme` — voir [Place dans
-l'architecture](02.place-dans-architecture) pour le détail et l'historique
+l'architecture](../02.place-dans-architecture) pour le détail et l'historique
 documenté (tentative `extends@` abandonnée).
 
 ## `grav/user/themes/gites-theme/templates/partials/{galerie-apercu,galerie-section}.html.twig`

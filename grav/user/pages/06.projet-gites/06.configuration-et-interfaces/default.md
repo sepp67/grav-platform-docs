@@ -43,7 +43,7 @@ content_type: text/html
 
 `to` sert de **fallback** dans `resolveProprietaireEmail()` — utilisé
 concrètement quand la route `gite` soumise ne résout à aucun propriétaire
-valide (vérifié en direct, voir [Référence](11.reference)).
+valide (vérifié en direct, voir [Référence](../11.reference)).
 
 ## `grav/user/config/gites-photos-taxonomie.yaml`
 
@@ -96,7 +96,7 @@ telles que fournies par l'environnement d'exécution.
 
 | Fonction | Signature | Enregistrement | Comportement |
 |---|---|---|---|
-| `proprietaire_email` | `(?string $giteRoute): ?string` | `contact.php::onTwigInitialized()` | résout un compte Grav depuis une route de page — voir [Référence](11.reference) pour l'audit complet du routage |
+| `proprietaire_email` | `(?string $giteRoute): ?string` | `contact.php::onTwigInitialized()` | résout un compte Grav depuis une route de page — voir [Référence](../11.reference) pour l'audit complet du routage |
 | `disponibilites_periodes` | `(page) => array` | `calendrier-disponibilites.php::onTwigInitialized()` | délègue à `Availability::getUnavailablePeriods($page)`, lecture seule |
 
 ---

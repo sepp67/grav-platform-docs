@@ -25,7 +25,7 @@ les templates Twig et le CSS propres au site »).
 
 ## Contrat fonctionnel repris
 
-- page Grav portant `form.name: contact-form` (`grav/user/pages/07.contact/default.md`) ;
+- page Grav portant `form.name: contact-form` (`grav/user/pages/08.contact/default.md`) ;
 - champs `nom`, `email`, `telephone` (facultatif), `message`, `honeypot` ;
 - validation des champs obligatoires (`nom`, `email`, `message`) côté Grav ;
 - honeypot rejeté silencieusement par `onFormValidationProcessed` (`contact.php`) ;

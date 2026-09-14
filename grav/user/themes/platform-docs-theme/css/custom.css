@@ -47,3 +47,16 @@
         padding: 0.5rem 0;
     }
 }
+
+/* VISUAL-001 (Lot 8) : la page d'accueil utilise template: default (pas
+   template: docs/chapter), donc son contenu ne vit pas sous #body-inner —
+   les règles ci-dessus ne le protègent pas. Constaté en direct : sur un
+   viewport mobile étroit, le titre H1 de l'accueil ("Documentation de la
+   plateforme Grav", grande taille d'affichage héritée de Learn2) déborde
+   horizontalement d'un seul mot, provoquant un défilement horizontal de
+   toute la page. Règle globale, pas seulement #body-inner : la coupure de
+   mot ne s'applique que si un mot est réellement plus large que le
+   conteneur, sans effet sur un texte qui tient déjà dans la largeur. */
+h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+}

@@ -47,7 +47,7 @@ content_type: text/html
 
 `to` sert de **fallback** dans `resolveProprietaireEmail()` — jamais la
 destination normale en fonctionnement nominal (qui résout vers le compte
-`admin`, voir [Sections de code](05.sections-de-code)). Aucun identifiant
+`admin`, voir [Sections de code](../05.sections-de-code)). Aucun identifiant
 SMTP ici : `mailer.engine: smtp` sans `mailer.smtp.server/port/user/password`
 — ces clés ne sont injectées qu'à l'exécution par
 `loadEmailPrivateConfig()`, si le fichier hors dépôt existe.

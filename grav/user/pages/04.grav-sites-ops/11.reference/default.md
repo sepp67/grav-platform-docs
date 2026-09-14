@@ -85,7 +85,7 @@ Ces quatre verdicts ne sont **jamais fusionnés** entre eux dans cette
 documentation : une construction acceptée ne signifie pas une migration
 réalisée, une CI verte ne signifie pas un déploiement réel.
 
-## Glossaire
+## Glossaire local
 
 | Terme | Définition |
 |---|---|
@@ -118,20 +118,20 @@ réalisée, une CI verte ne signifie pas un déploiement réel.
 (473 lignes) et `scripts/lib/gso_compliance.py` (301 lignes) ont été lus
 intégralement, et `docs/COMPLIANCE-MATRIX.md` a été lu et vérifié en
 intégralité (257 lignes, 204 exigences comptées directement) — voir
-[Sections de code](05.sections-de-code) et [Tests et CI](08.tests-et-ci).
+[Sections de code](../05.sections-de-code) et [Tests et CI](../08.tests-et-ci).
 
 ## Index des pages de cette rubrique
 
-1. [Vue d'ensemble](01.vue-ensemble)
-2. [Place dans l'architecture](02.place-dans-architecture)
-3. [Structure du dépôt](03.structure-du-depot)
-4. [Flux chronologique](04.flux-chronologique)
-5. [Sections de code](05.sections-de-code)
-6. [Configuration et interfaces](06.configuration-et-interfaces)
-7. [Données, secrets et persistance](07.donnees-secrets-persistance)
-8. [Tests et CI](08.tests-et-ci)
-9. [Exploitation et diagnostic](09.exploitation-et-diagnostic)
-10. [Adopter et étendre](10.adopter-et-etendre)
+1. [Vue d'ensemble](../01.vue-ensemble)
+2. [Place dans l'architecture](../02.place-dans-architecture)
+3. [Structure du dépôt](../03.structure-du-depot)
+4. [Flux chronologique](../04.flux-chronologique)
+5. [Sections de code](../05.sections-de-code)
+6. [Configuration et interfaces](../06.configuration-et-interfaces)
+7. [Données, secrets et persistance](../07.donnees-secrets-persistance)
+8. [Tests et CI](../08.tests-et-ci)
+9. [Exploitation et diagnostic](../09.exploitation-et-diagnostic)
+10. [Adopter et étendre](../10.adopter-et-etendre)
 
 ---
 

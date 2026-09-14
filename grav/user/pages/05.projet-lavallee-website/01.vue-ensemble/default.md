@@ -65,7 +65,7 @@ site lavallee.tech, indépendamment de tout déploiement réel.
 
 Pour déployer une instance en production (relève d'`ansible-role-grav-site`,
 non encore branché sur ce dépôt à la date auditée — voir [Place dans
-l'architecture](02.place-dans-architecture)) ; pour modifier le runtime
+l'architecture](../02.place-dans-architecture)) ; pour modifier le runtime
 générique (relève de `grav-runtime`) ; pour gérer l'exposition Internet du
 site (hors périmètre absolu de ce dépôt).
 
@@ -76,7 +76,7 @@ workflow `release.yml` ne se déclenche que sur un tag `v[0-9]+.[0-9]+.[0-9]+`
 ou un déclenchement manuel, et aucun de ces deux événements ne s'est encore
 produit à cette date. `docs/architecture.md` du dépôt le confirme
 explicitement : le branchement vers `ansible-role-grav-site` n'est « pas
-encore » effectif. Voir [Référence](11.reference) pour le détail des écarts
+encore » effectif. Voir [Référence](../11.reference) pour le détail des écarts
 constatés entre ces déclarations et le code.
 
 ---

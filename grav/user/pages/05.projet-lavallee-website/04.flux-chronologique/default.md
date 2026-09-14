@@ -38,7 +38,7 @@ de ses 4 instructions `COPY` cible exclusivement un sous-répertoire de
 
 Chemin : mécanisme du **runtime** (`grav-runtime`, hors périmètre de ce
 dépôt) déclenché par le contenu fourni par ce dépôt. Reconstruit et
-**vérifié en direct** pendant ce lot (voir [Tests et CI](08.tests-et-ci)).
+**vérifié en direct** pendant ce lot (voir [Tests et CI](../08.tests-et-ci)).
 
 | # | Étape | Preuve |
 |---|---|---|
@@ -51,13 +51,13 @@ dépôt) déclenché par le contenu fourni par ce dépôt. Reconstruit et
 **Point de vigilance** : la présence du fichier `Dockerfile` ne prouve pas
 son exécution ; l'étape 2-5 ci-dessus n'est affirmée que parce qu'elle a
 été **observée en direct** pendant ce lot (conteneur jetable, sans volume
-préexistant) — voir [Tests et CI](08.tests-et-ci) pour le détail des
+préexistant) — voir [Tests et CI](../08.tests-et-ci) pour le détail des
 commandes exécutées.
 
 ## C. Redémarrage ou remplacement du conteneur
 
 Vérifié en direct via `tests/test-persistence.sh`, rejoué pendant ce lot
-(voir [Tests et CI](08.tests-et-ci)).
+(voir [Tests et CI](../08.tests-et-ci)).
 
 | # | Étape | Preuve |
 |---|---|---|
@@ -71,7 +71,7 @@ Vérifié en direct via `tests/test-persistence.sh`, rejoué pendant ce lot
 Chemin : `contact.php` (94 lignes, lu en intégralité) + `06.contact/default.md`
 (frontmatter) + `forms/contact-email.html.twig`. **Vérifié en direct** via
 une soumission réelle contre un SMTP factice (Mailpit) — voir [Tests et
-CI](08.tests-et-ci) pour les commandes exactes et [Référence](11.reference)
+CI](../08.tests-et-ci) pour les commandes exactes et [Référence](../11.reference)
 pour les constats détaillés (échappement, injection, CSRF).
 
 | # | Étape | Détail vérifié |
@@ -112,7 +112,7 @@ loin dans la chaîne.
 | CRLF dans `nom` (utilisé par le sujet) | `Test\r\nBcc: attacker@example.invalid` | HTTP 200, pas de redirection, « Saisie non valide "Nom" » | **non** | — | non identifié dans le code de ce dépôt ; **déduction** : Grav Core, `type: text` |
 | Honeypot rempli | `rempli-par-un-bot` | HTTP 200, pas de redirection, « Votre demande n'a pas pu être traitée. » | **non** | — | **identifié avec certitude** : `contact.php::onFormValidationProcessed()`, dans ce dépôt |
 | E-mail syntaxiquement invalide | `pas-une-adresse` | HTTP 200, pas de redirection, « Saisie non valide "E-mail" » | **non** | — | non identifié dans le code de ce dépôt ; **déduction** : validation de format de Grav Core, `type: email` |
-| Soumission nominale | `nom="Jean Dupont"`, `email="valide@example.invalid"`, `message="Message de test nominal."` | HTTP 302 → `/fr/contact/confirmation` | **oui** | `To: admin@example.com` (compte de test synthétique, voir [Référence](11.reference)) ; sujet et corps conformes aux valeurs soumises, caractères spéciaux correctement échappés (vérifié séparément avec `&`, `<b>`, apostrophes et guillemets dans une soumission distincte) | traduction du frontmatter (`process.email`) + Twig autoescape ; ce dépôt pour le contenu, Grav Core pour l'envoi |
+| Soumission nominale | `nom="Jean Dupont"`, `email="valide@example.invalid"`, `message="Message de test nominal."` | HTTP 302 → `/fr/contact/confirmation` | **oui** | `To: admin@example.com` (compte de test synthétique, voir [Référence](../11.reference)) ; sujet et corps conformes aux valeurs soumises, caractères spéciaux correctement échappés (vérifié séparément avec `&`, `<b>`, apostrophes et guillemets dans une soumission distincte) | traduction du frontmatter (`process.email`) + Twig autoescape ; ce dépôt pour le contenu, Grav Core pour l'envoi |
 
 **Ce que ce tableau ne permet pas d'affirmer** : que Grav Core ou
 PHPMailer sont, en général, invulnérables à toute forme d'injection

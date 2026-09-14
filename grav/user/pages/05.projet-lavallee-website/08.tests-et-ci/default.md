@@ -11,7 +11,7 @@ Sept statuts distincts, jamais confondus dans cette page : **test présent
 dans le dépôt**, **test réellement exécuté pendant ce lot**, **build local
 réellement exécuté**, **démarrage réellement exécuté**, **formulaire
 réellement soumis**, **workflow CI lu** (le fichier YAML), **run CI
-observé** (aucun ici — voir [Référence](11.reference)), et **comportement
+observé** (aucun ici — voir [Référence](../11.reference)), et **comportement
 seulement déduit** de la lecture du code.
 
 ## Commandes réellement exécutées pour cette rubrique
@@ -58,10 +58,10 @@ contrôle pour l'échappement :
 - `pas-une-adresse` (e-mail syntaxiquement invalide) dans `email` → **rejetée avant tout traitement**, « Saisie non valide "E-mail" », aucun e-mail produit ;
 - honeypot rempli → **rejetée**, « Votre demande n'a pas pu être traitée. » (mécanisme identifié avec certitude : `contact.php`, ce dépôt), aucun e-mail produit ;
 - soumission nominale (« Jean Dupont », valeurs propres) → HTTP 302, `Location: /fr/contact/confirmation`, e-mail produit ;
-- soumission de contrôle pour l'échappement (« Jean Dupont & Associés », message avec apostrophes/guillemets/balise `<b>`) → e-mail produit, `To: admin@example.com` (compte de test synthétique, voir [Référence](11.reference)), sujet et corps HTML correctement échappés (`&amp;`, `&lt;b&gt;`, `&#039;`, `&quot;`).
+- soumission de contrôle pour l'échappement (« Jean Dupont & Associés », message avec apostrophes/guillemets/balise `<b>`) → e-mail produit, `To: admin@example.com` (compte de test synthétique, voir [Référence](../11.reference)), sujet et corps HTML correctement échappés (`&amp;`, `&lt;b&gt;`, `&#039;`, `&quot;`).
 
 Voir le tableau de preuve complet, charge par charge, en [Flux
-chronologique, chronologie D](04.flux-chronologique).
+chronologique, chronologie D](../04.flux-chronologique).
 
 ## Matrice des tests et garanties
 
@@ -71,7 +71,7 @@ chronologique, chronologie D](04.flux-chronologique).
 | Démarrage, healthy, redirection multilingue | `test-startup.sh` | dynamique, Docker | ✅ | idem | conteneur jetable sans volume — ne teste pas un redémarrage |
 | Présence applicative (thème, plugin, seed, 12 routes × 3 langues, sélecteur de langue, CSS, admin) | `test-app-presence.sh` | dynamique, Docker | ✅ | idem | vérifie la présence du champ `nom` dans le HTML, **pas** une soumission réelle |
 | Persistance des 4 volumes après redémarrage | `test-persistence.sh` | dynamique, Docker Compose | ✅ | **non** — exclu explicitement de `ci.yml` (« non bloquant », scénario plus long) | — |
-| Soumission réelle du formulaire — 7 charges distinctes (champ requis vide, XSS `nom`, XSS `message`, CRLF `nom`, CRLF `email`, e-mail invalide, honeypot) + 2 soumissions valides (nominale, échappement) | **aucun test dédié dans ce dépôt** | dynamique, Docker + Mailpit, construit pour ce lot | ✅ (audit Lot 6/6.1 uniquement, hors suite du dépôt) | absent | ce dépôt ne couvre pas du tout ce scénario par ses propres tests — écart signalé en [Référence](11.reference) ; les mécanismes de rejet observés (XSS, saisie multi-ligne, format e-mail) sont attribués **par déduction** à Grav Core, jamais confirmés par lecture de son code source |
+| Soumission réelle du formulaire — 7 charges distinctes (champ requis vide, XSS `nom`, XSS `message`, CRLF `nom`, CRLF `email`, e-mail invalide, honeypot) + 2 soumissions valides (nominale, échappement) | **aucun test dédié dans ce dépôt** | dynamique, Docker + Mailpit, construit pour ce lot | ✅ (audit Lot 6/6.1 uniquement, hors suite du dépôt) | absent | ce dépôt ne couvre pas du tout ce scénario par ses propres tests — écart signalé en [Référence](../11.reference) ; les mécanismes de rejet observés (XSS, saisie multi-ligne, format e-mail) sont attribués **par déduction** à Grav Core, jamais confirmés par lecture de son code source |
 | Absence de secret dans l'image | **aucun test dans ce dépôt** | — | non exécuté | absent | contrairement à `grav-platform-docs` (`test-secrets.sh`), ce dépôt n'a pas d'équivalent |
 
 ## CI : deux workflows, jamais le même déclencheur

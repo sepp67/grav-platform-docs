@@ -116,7 +116,7 @@ persistantes de la VM. `docs/OPERATIONS.md` le formule explicitement :
 « Le rollback logiciel rétablit une version déclarée de l'image. Les
 données persistantes restent dans leur état courant. Une restauration de
 contenu constitue une opération différente, hors du rollback applicatif
-automatique. » — voir [Exploitation et diagnostic](09.exploitation-et-diagnostic).
+automatique. » — voir [Exploitation et diagnostic](../09.exploitation-et-diagnostic).
 
 ---
 

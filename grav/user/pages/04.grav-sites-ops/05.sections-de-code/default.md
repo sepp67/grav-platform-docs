@@ -26,7 +26,7 @@ Le module partagé de validation statique. Quatre fonctions publiques :
   secrets uniquement sous forme `name`+`content` (`src` refusé,
   `GSO-REQ-203`), nom conforme à `^[A-Za-z0-9][A-Za-z0-9._-]*$`.
 - **`validate_selector()`** — l'algorithme du sélecteur fermé en 8 étapes
-  numérotées (détaillé en [Flux chronologique, chronologie A](04.flux-chronologique)).
+  numérotées (détaillé en [Flux chronologique, chronologie A](../04.flux-chronologique)).
 - **`validate_preflight()`** (exposée via la sous-commande `preflight`) —
   compose `validate_registry` + `validate_vault` pour un seul hôte,
   appelée par `_shared/mutate.yml` comme second garde-fou structurel.
@@ -75,13 +75,13 @@ Séquence commune aux trois intentions de mutation, quatre tâches
 strictement ordonnées : assertion structurelle sur `ansible_limit` →
 second préflight (`gso_validate.py preflight`, `no_log: true`) →
 `include_tasks: translate.yml` → `include_role: sepp67.grav_site`. Voir
-le détail complet en [Flux chronologique, chronologie B](04.flux-chronologique).
+le détail complet en [Flux chronologique, chronologie B](../04.flux-chronologique).
 
 ## `playbooks/_shared/translate.yml` (59 lignes, lu intégralement)
 
 Le point de passage obligé entre données déclaratives et interface
 publique du rôle — voir la table complète en [Configuration et
-interfaces](06.configuration-et-interfaces). Deux `set_fact` distincts :
+interfaces](../06.configuration-et-interfaces). Deux `set_fact` distincts :
 un premier sans `no_log` pour les champs non secrets du registre, un
 second avec `no_log: true` pour le bootstrap administrateur et les
 secrets applicatifs — cette séparation est **structurelle dans le
@@ -90,7 +90,7 @@ fichier**, pas une convention documentée seulement.
 ## `playbooks/_shared/observe.yml` (163 lignes, lu intégralement)
 
 Collecte en lecture seule des trois états (désiré/appliqué/réel) —
-détaillé en [Flux chronologique, chronologie C](04.flux-chronologique).
+détaillé en [Flux chronologique, chronologie C](../04.flux-chronologique).
 Aucune tâche de ce fichier n'a de `changed_when` implicite à `true` :
 chaque tâche de collecte est soit intrinsèquement idempotente
 (`slurp`, `stat`, `uri` GET, `docker inspect` via `command`), soit
@@ -201,12 +201,12 @@ append-only sur des fixtures ; `l8-history-append-only` exerce
 `validate_append_only()` de bout en bout via le wrapper Git, avec des
 mini-dépôts jetables (transition valide, réécriture refusée, suppression
 refusée, dépôt superficiel refusé, commit initial toléré) — voir [Tests
-et CI](08.tests-et-ci).
+et CI](../08.tests-et-ci).
 
 **Point de vigilance** : ce module ne **réalise** aucune opération de
 cycle de vie. Il ne retire ni ne réactive jamais un site — il valide,
 après coup, des fichiers déjà modifiés manuellement par un opérateur (voir
-[Flux chronologique, chronologie E](04.flux-chronologique)). `make
+[Flux chronologique, chronologie E](../04.flux-chronologique)). `make
 lint-lifecycle` l'invoque d'ailleurs **sans** `--registry`/`--vault` : cet
 appel-là ne vérifie donc que le schéma et l'append-only des deux
 registres documentaires, pas leur disjonction avec le registre/vault
@@ -267,8 +267,8 @@ le code source du générateur), jamais que les 204 exigences ont été
 « conformité effectivement démontrée » n'est faite nulle part par le
 code lui-même — elle appartient entièrement à la discipline éditoriale
 des auteurs du dépôt en tenant `ENTRY` à jour. Ce document distingue ces
-cinq niveaux explicitement en [Référence](11.reference) et [Tests et
-CI](08.tests-et-ci), précisément pour ne pas laisser la matrice seule
+cinq niveaux explicitement en [Référence](../11.reference) et [Tests et
+CI](../08.tests-et-ci), précisément pour ne pas laisser la matrice seule
 faire office de preuve d'exécution.
 
 **Tests qui l'exercent** : `l10-ci-blocking` et `l11-acceptance-guards`

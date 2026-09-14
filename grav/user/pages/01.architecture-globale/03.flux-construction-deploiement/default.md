@@ -49,18 +49,26 @@ contrôle HTTP local au vert) sans être "exposée" (étape 4 pas encore faite)
    aucune reconfiguration n'est nécessaire pour une simple mise à jour
    d'image.
 
+Détail complet de ce dépôt (chronologies, sections de code, audit du
+formulaire de contact) : [rubrique
+`projet-lavallee-website`](../../05.projet-lavallee-website).
+
 ## Exemple concret : `projet-gites`
 
 Même chaîne, avec une différence notable : le thème `gites-theme` de
 `projet-gites` embarque ses propres templates de gestion des disponibilités
 et de galerie photo (`templates/gerer-disponibilites.html.twig`,
-`templates/gite-photos.html.twig`, `templates/partials/galerie-*.html.twig`
-— constatés par inspection directe du dépôt, audit complet réservé au
-Lot 7). La chaîne de build → publication → déploiement ne change
-pas d'une image applicative à l'autre : c'est précisément ce que garantit la
-séparation runtime / image applicative / rôle — `ansible-role-grav-site`
-déploie `projet-gites` exactement comme il déploie `projet-lavallee-website`
-ou `grav-platform-docs`, sans connaître leur contenu métier respectif.
+`templates/gite-photos.html.twig`, `templates/partials/galerie-*.html.twig`).
+La chaîne de build → publication → déploiement ne change pas d'une image
+applicative à l'autre : c'est précisément ce que garantit la séparation
+runtime / image applicative / rôle — `ansible-role-grav-site` déploie
+`projet-gites` exactement comme il déploie `projet-lavallee-website` ou
+`grav-platform-docs`, sans connaître leur contenu métier respectif.
+
+Détail complet de ce dépôt, y compris un constat de sécurité confirmé sur
+le routage du formulaire de contact (référence **SEC-GITES-001**, non
+corrigé au commit documenté) : [rubrique
+`projet-gites`](../../06.projet-gites).
 
 ---
 
@@ -70,5 +78,5 @@ Sources documentées : grav-runtime (v1.0.4, e6e35c37bce2d214b4fb2ca77549f7bec7e
                        projet-gites (main, b27d7afa0c86461e94ab8c9ec53c557edb0afd0e) — README.md, grav/user/themes/gites-theme/templates/ ;
                        ansible-role-grav-site (v2.0.0, 1339e50bc20257fbb9f21953995c08262ae3043e),
                        grav-sites-ops (v1.0.0, 48b9a59b956f73f10e5602b72a222dd71b4a3f3a) — voir docs/documentation-sources.yml
-Dernière vérification : 2026-09-11
+Dernière vérification : 2026-09-14 (Lot 8 — liens croisés ajoutés, note obsolète retirée)
 ```

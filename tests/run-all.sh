@@ -4,7 +4,7 @@
 set -eu
 cd "$(dirname "$0")"
 
-for script in test-build.sh test-syntax.sh test-startup.sh test-app-presence.sh test-contact-form.sh test-secrets.sh; do
+for script in test-build.sh test-syntax.sh test-startup.sh test-app-presence.sh test-internal-links.sh test-contact-form.sh test-secrets.sh; do
   echo "=== $script ==="
   sh "$script"
 done

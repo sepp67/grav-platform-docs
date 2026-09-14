@@ -43,7 +43,7 @@ Confirmé par lecture complète du `Dockerfile` (aucune primitive de
 volume) et par observation directe : un redémarrage **et** un changement
 d'image (mise à jour ou rollback) conservent les 4 répertoires
 persistants — vérifiés en direct dans les deux cas (voir [Flux
-chronologique, chronologies B et C](04.flux-chronologique)).
+chronologique, chronologies B et C](../04.flux-chronologique)).
 
 ## Comptes propriétaires : donnée métier, pas de la configuration
 

@@ -50,15 +50,15 @@ rien du mécanisme de déploiement.
 Les deux dépôts partagent la même architecture d'image applicative
 (construite sur `grav-runtime`, consommée par `ansible-role-grav-site`),
 mais avec un métier et des choix techniques différents. Détail complet en
-[Place dans l'architecture](02.place-dans-architecture) ; ce tableau ne
+[Place dans l'architecture](../02.place-dans-architecture) ; ce tableau ne
 couvre que les traits distinctifs les plus visibles :
 
-| Élément | `projet-gites` | [`projet-lavallee-website`](../05.projet-lavallee-website) | Commun ou spécifique |
+| Élément | `projet-gites` | [`projet-lavallee-website`](../../05.projet-lavallee-website) | Commun ou spécifique |
 |---|---|---|---|
 | Thème | `gites-theme`, **hérite** de `quark2` via chaînage `streams` | `lavallee-theme`, **entièrement autonome** | spécifique aux deux |
 | Langues | **monolingue** (français uniquement, aucun dossier `languages/`) | trilingue (FR/DE/EN) | spécifique aux deux |
 | Plugins métier | `contact` **+** `calendrier-disponibilites` (avec auto-administration côté propriétaire) | `contact` seul | spécifique à `projet-gites` |
-| Résolution du destinataire du formulaire | route du gîte fournie par un **champ caché rempli par le visiteur** (`form.value('gite')`), sans valeur par défaut | route fixe par défaut (`/contact`) | mécanisme partagé, usage différent — voir [Référence](11.reference) |
+| Résolution du destinataire du formulaire | route du gîte fournie par un **champ caché rempli par le visiteur** (`form.value('gite')`), sans valeur par défaut | route fixe par défaut (`/contact`) | mécanisme partagé, usage différent — voir [Référence](../11.reference) |
 | Tests | 6 scripts, dont `test-secrets.sh` (4 scénarios) et `test-update-rollback.sh` | 4 scripts, aucun test de secrets dédié | `projet-gites` plus complet |
 | Documentation interne | 6 fichiers `docs/*.md` détaillés (contrat runtime, politique de compatibilité, cycle de vie du seed, secrets, tests, release/rollback) | 1 fichier (`docs/architecture.md`) | `projet-gites` plus complet |
 
@@ -96,7 +96,7 @@ Deux gîtes sont définis : l'un (« Chalet Wisches ») porte un contenu
 (« à remplacer par les données réelles »), avec des valeurs numériques
 non renseignées (capacité et nombre de chambres à `0`). La documentation
 interne du dépôt certifie sa compatibilité avec `grav-runtime 1.0.2` alors
-que le `Dockerfile` référence `1.0.4` — voir [Référence](11.reference)
+que le `Dockerfile` référence `1.0.4` — voir [Référence](../11.reference)
 pour le détail complet de cet écart et des autres constats.
 
 ---

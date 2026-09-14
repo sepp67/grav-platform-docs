@@ -17,7 +17,7 @@ inconditionnellement, (2) active deux écouteurs supplémentaires
   site) ; si `honeypot` a une valeur non vide, lève une
   `ValidationException` avec un message générique en français
   (« Votre demande n'a pas pu être traitée. »), quelle que soit la langue
-  de la page — voir [Référence](11.reference).
+  de la page — voir [Référence](../11.reference).
 - **`onTwigInitialized()`** — enregistre la fonction Twig
   `proprietaire_email`, pointant vers `resolveProprietaireEmail()`.
 - **`resolveProprietaireEmail(?string $route = null)`** — route par défaut
@@ -27,7 +27,7 @@ inconditionnellement, (2) active deux écouteurs supplémentaires
   (`$this->grav['accounts']->load($username)`) → sans compte existant →
   fallback ; retourne `$user['email']` s'il existe, sinon fallback. Chaque
   étape testée en direct pendant ce lot (voir [Flux chronologique,
-  chronologie D](04.flux-chronologique)).
+  chronologie D](../04.flux-chronologique)).
 - **`loadEmailPrivateConfig()`** — résout `user://config/email-private.php`
   via le locator Grav ; fichier absent → retour silencieux (aucune
   erreur) ; sinon `require` le fichier (un tableau PHP attendu), et injecte
@@ -53,7 +53,7 @@ français** (`"[Contact lavallee.tech] Nouveau message de {{ form.value.nom }}"`
 et `forms/contact-email.html.twig`, tous deux non paramétrés par langue) —
 seule la **redirection** (`/fr\|de\|en/contact/confirmation`) est
 correctement localisée par variante. Voir l'inventaire complet en
-[Référence](11.reference).
+[Référence](../11.reference).
 
 ## `grav/user/themes/lavallee-theme/templates/partials/base.html.twig` (69 lignes, lu intégralement)
 
@@ -72,7 +72,7 @@ Layout racine. Points structurants :
   explique cette distinction ; pas une incohérence.
 - Lien LinkedIn du footer : `href="www.linkedin.com/in/sébastien-clem-592a57411"`
   — **sans schéma `https://`**, donc un lien **relatif cassé** dans un
-  navigateur (voir [Référence](11.reference)).
+  navigateur (voir [Référence](../11.reference)).
 - `mentions-legales` référencé via `{{ base_url }}/mentions-legales`
   (préfixe de langue non explicite — dépend de la résolution de
   `base_url` par Grav, non revérifiée indépendamment ici).
@@ -95,7 +95,7 @@ Tri identique dans les deux templates :
 factorisé en macro/include), mais fonctionnellement identique dans les
 trois emplacements. `article.html.twig` n'affiche un bandeau de date que
 si `page.header.published_label` est renseigné — absent sur l'article
-`01.mfa-keycloak-privacyidea` (voir [Référence](11.reference)).
+`01.mfa-keycloak-privacyidea` (voir [Référence](../11.reference)).
 
 ## `grav/user/themes/lavallee-theme/templates/etude-cas-{matrix,flotte-mobile,grav}.html.twig`
 
@@ -109,7 +109,7 @@ structure imposée au-delà du header/footer communs.
 Corps HTML de l'e-mail de notification. Chaque valeur utilisateur est
 échappée explicitement (`|e`), le message est en plus passé par `|nl2br`.
 Contenu entièrement en français, non paramétré par la langue du
-visiteur — voir chronologie D et [Référence](11.reference).
+visiteur — voir chronologie D et [Référence](../11.reference).
 
 ---
 

@@ -29,7 +29,7 @@ tout ce qui est « Dans l'image » est produit par **ce dépôt** au moment du
 l'entrypoint est produit par `grav-runtime` (non ré-audité ici, voir Lot
 3). Aucun fichier de ce dépôt n'est produit par `ansible-role-grav-site` ou
 injecté par `grav-sites-ops` — cohérent avec l'absence de branchement
-constatée en [Place dans l'architecture](02.place-dans-architecture) :
+constatée en [Place dans l'architecture](../02.place-dans-architecture) :
 ni `docker-compose.yml` de production, ni `grav.env`, ni aucun mécanisme
 d'injection de secret ne sont visibles dans ce dépôt lui-même.
 
@@ -48,7 +48,7 @@ apparaître » dans l'arborescence versionnée (commentaire du fichier).
 données persistantes de production après l'initialisation ». Confirmé par
 lecture complète du `Dockerfile` (aucune primitive de volume, aucun
 mécanisme de sauvegarde) et par observation directe (voir [Flux
-chronologique, chronologie C](04.flux-chronologique)) : un redémarrage
+chronologique, chronologie C](../04.flux-chronologique)) : un redémarrage
 conserve les 4 répertoires persistants sans aucune intervention de ce
 dépôt.
 
@@ -58,7 +58,7 @@ Vérifié par double garde-fou cohérent (`.gitignore` + `.dockerignore`) et
 par test direct (`tests/test-secrets.sh`, absent de ce dépôt — cette
 vérification appartient à `grav-platform-docs` lui-même, pas à
 `projet-lavallee-website` ; aucun test équivalent n'existe dans ce dépôt,
-voir [Tests et CI](08.tests-et-ci)). Le seul mécanisme d'injection de
+voir [Tests et CI](../08.tests-et-ci)). Le seul mécanisme d'injection de
 secret observé est le chargement conditionnel de `email-private.php` par
 `contact.php`, jamais un mécanisme propre à ce dépôt.
 

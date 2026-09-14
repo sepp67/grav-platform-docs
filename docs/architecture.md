@@ -191,3 +191,22 @@ fin de la construction du site documentaire lui-même ; (2) la correction
 du constat identifié dans `projet-gites` (référence : rapport de sécurité
 privé associé, hors de ce dépôt) ; (3) un nouvel audit du dépôt une fois
 corrigé.
+
+## Dettes d'accessibilité connues (Lot 8)
+
+VISUAL-001 a couvert le rendu visuel (absence de débordement horizontal,
+lisibilité desktop/mobile, formulaire, confirmation) et corrigé un bug
+réel (titre H1 de l'accueil débordant sur mobile étroit,
+`overflow-wrap: break-word` ajouté à `custom.css`). Trois vérifications
+d'accessibilité restent **ouvertes**, identifiées sous des identifiants
+stables pour un suivi ultérieur :
+
+- **A11Y-001** — contraste des couleurs non mesuré par un outil dédié
+  (inspection visuelle seule pendant le Lot 8).
+- **A11Y-002** — parcours au clavier et visibilité du focus non vérifiés.
+- **A11Y-003** — zoom à 200 % et reflow associé non vérifiés en
+  profondeur (au-delà de la largeur mobile réduite déjà testée).
+
+Ces trois dettes **doivent être fermées avant toute release publique**,
+mais ne bloquent pas la construction ni la consultation locale de ce site
+documentaire.

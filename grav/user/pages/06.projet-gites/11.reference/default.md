@@ -28,6 +28,7 @@ pour la correction.
 | Statut | Confirmé, non corrigé dans le snapshot documenté par ce lot |
 | Correctif | À réaliser dans `projet-gites` — hors périmètre de ce dépôt documentaire |
 | Retest | Obligatoire après correction, avant toute nouvelle certification de ce constat comme résolu |
+| **Effet sur la publication** | **Bloque toute release publique et tout déploiement documentés comme prêts pour production, tant que la stratégie de correction et de divulgation n'a pas été explicitement arbitrée** — n'empêche pas la construction ni la consultation locale de ce site documentaire |
 
 **Ce que cette page ne fournit pas, par choix éditorial** : la requête
 exacte, une commande de reproduction, les identifiants de compte utilisés
@@ -44,7 +45,7 @@ SEC-GITES-001 et ne permettant pas, seuls, sa reproduction :
   complète.
 - **CSRF** : sur le formulaire de contact, fourni par le Form plugin de
   Grav Core (nonce standard, non ré-audité au niveau code — voir
-  [Lot 6](../05.projet-lavallee-website/11.reference) pour la même
+  [Lot 6](../../05.projet-lavallee-website/11.reference) pour la même
   observation). Sur le formulaire de gestion des disponibilités
   (`/gerer`), un nonce **dédié** est vérifié explicitement dans le code
   de ce dépôt, **avant** toute autre logique — mécanisme identifié avec
@@ -57,7 +58,7 @@ SEC-GITES-001 et ne permettant pas, seuls, sa reproduction :
   selon le champ, attribué **par déduction** à Grav Core/PHPMailer, jamais
   confirmé par lecture de leur code).
 - **Chargement des secrets SMTP** : identique à `projet-lavallee-website`
-  — voir [Données, secrets et persistance](07.donnees-secrets-persistance)
+  — voir [Données, secrets et persistance](../07.donnees-secrets-persistance)
   pour le risque de `ParseError` documenté et confirmé en direct (HTTP 500).
 - **Langue** : sans objet pour la localisation — dépôt monolingue.
 
@@ -164,6 +165,17 @@ confirme. Il reste **majoritairement compatible avec `v2.0.0`**, à
 l'exception d'un point précis et vérifié : `grav_bind_address`, devenu
 obligatoire, ferait échouer un déploiement basé tel quel sur cet exemple
 contre le rôle `v2.0.0` déjà audité au Lot 4.
+
+## Glossaire local
+
+| Terme | Définition |
+|---|---|
+| Seed | contenu initial copié dans `/opt/grav-seed/pages/`, appliqué uniquement si le volume `user/pages` est vide au premier démarrage |
+| Code applicatif immuable | thème, plugins, configuration — réécrits à chaque nouveau conteneur, jamais lus depuis un volume persistant |
+| `proprietaire` | clé de frontmatter d'une page de gîte désignant le compte Grav dont l'adresse sert de destinataire du formulaire de contact |
+| Honeypot | champ caché destiné aux robots ; son remplissage rejette la soumission — **pas** une protection complète contre le spam |
+| Garde administrateur (`Permissions::canManage`) | vérification serveur, avant toute mutation de disponibilités, qu'un utilisateur authentifié correspond bien au propriétaire du gîte concerné |
+| SEC-GITES-001 | identifiant du constat de sécurité sur le routage du formulaire de contact — voir plus haut sur cette page |
 
 ## Limites de preuve de cette rubrique
 

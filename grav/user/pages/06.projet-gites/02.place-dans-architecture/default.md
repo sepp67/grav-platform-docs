@@ -12,7 +12,7 @@ par tag explicite dans le `Dockerfile` — jamais `latest`. **Constat
 important** : le `Dockerfile` référence `grav-runtime:1.0.4`, mais
 `docs/architecture.md` et `docs/compatibility-policy.md` de ce même
 commit citent `grav-runtime:1.0.2` comme version certifiée — un écart
-documentaire réel, détaillé en [Référence](11.reference).
+documentaire réel, détaillé en [Référence](../11.reference).
 
 ## En aval
 
@@ -20,7 +20,7 @@ documentaire réel, détaillé en [Référence](11.reference).
 fichiers `docs/*.md`, tous lus intégralement) le cite systématiquement
 comme `ansible-role-grav-site:1.0.1` — une référence de version
 **différente** du tag `v2.0.0` déjà audité au [Lot
-4](../03.ansible-role-grav-site). Contrairement à `projet-lavallee-website`,
+4](../../03.ansible-role-grav-site). Contrairement à `projet-lavallee-website`,
 dont `docs/architecture.md` déclarait ce branchement « pas encore
 effectif », `projet-gites` documente un exemple de déploiement Ansible
 complet et déjà rédigé (`docs/release-and-rollback.md`). Le tag `v1.0.1`
@@ -28,7 +28,7 @@ existe réellement et a été **vérifié directement** pour ce lot (worktree
 détaché, comparaison ciblée) : l'exemple était bien compatible avec ce
 tag au moment de sa rédaction, et reste majoritairement compatible avec
 `v2.0.0`, à une exception près (`grav_bind_address`, devenu obligatoire) —
-détail complet en [Référence](11.reference).
+détail complet en [Référence](../11.reference).
 
 ## Chaîne de dépendance complète
 
@@ -58,7 +58,7 @@ documenté dans le code source de Grav »). `gites-theme` ne définit
 `quark2` via `{% extends 'partials/base.html.twig' %}`, résolu par le
 chaînage de flux vers le thème parent. C'est l'inverse exact du choix fait
 par `lavallee-theme` (entièrement autonome, voir [Lot
-6](../05.projet-lavallee-website/02.place-dans-architecture)).
+6](../../05.projet-lavallee-website/02.place-dans-architecture)).
 
 ## Ce que ce dépôt ne fait jamais (`docs/architecture.md`)
 
@@ -84,8 +84,8 @@ pare-feu (infrastructure externe).
 contre quelle version de `grav-runtime` elle a été certifiée, avec une
 matrice tenue à jour et une liste de « changements du runtime à considérer
 comme potentiellement incompatibles même si le numéro de version ne
-l'indique pas ». Voir [Adopter et étendre](10.adopter-et-etendre) pour la
-procédure complète, et [Référence](11.reference) pour la vérification que
+l'indique pas ». Voir [Adopter et étendre](../10.adopter-et-etendre) pour la
+procédure complète, et [Référence](../11.reference) pour la vérification que
 cette politique n'a, au commit audité, pas été respectée pour le passage
 de `1.0.2` à `1.0.4`.
 

@@ -66,7 +66,7 @@ vérifier un rendu réel (pas seulement build + healthy) avant d'adopter une
 nouvelle version de `grav-runtime` dans le `Dockerfile`, puis mettre à
 jour la matrice de compatibilité **avant** de taguer une nouvelle release.
 Cette procédure n'a, au commit audité, pas produit un état cohérent — voir
-[Référence](11.reference).
+[Référence](../11.reference).
 
 ## Contrat de déploiement (documenté, vérifié ponctuellement contre les deux versions du rôle)
 
@@ -78,7 +78,7 @@ tag `v2.0.0` déjà audité au Lot 4. Une vérification ciblée contre le tag
 `v1.0.1` réel confirme que cet exemple était compatible au moment de sa
 rédaction, et reste majoritairement compatible avec `v2.0.0` — à
 l'exception de `grav_bind_address`, devenu obligatoire depuis `v2.0.0` et
-absent de cet exemple. Comparaison complète en [Référence](11.reference).
+absent de cet exemple. Comparaison complète en [Référence](../11.reference).
 
 ## Responsabilités exclues (rappel)
 

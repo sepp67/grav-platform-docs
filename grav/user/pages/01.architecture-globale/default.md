@@ -26,6 +26,12 @@ construction de ce site :
 6. [Parcours d'adoption](06.parcours-adoption) — comment un sixième site
    (ce site documentaire lui-même) s'intègre à la plateforme.
 
+Un [Glossaire commun](../07.glossaire-commun) rassemble, au niveau
+racine du site (Lot 8, cohérence transverse), les termes qui recouvrent
+une même signification technique dans plusieurs des cinq dépôts —
+chaque dépôt garde en plus son propre glossaire local, page « Référence »
+de sa rubrique.
+
 Les affirmations de cette rubrique sont tracées aux sources listées dans
 `docs/documentation-sources.yml`, à la racine de ce dépôt — chaque sous-page
 ci-dessus cite en pied de page les dépôts, références et commits qui la
@@ -35,5 +41,5 @@ concernent spécifiquement.
 
 ```yaml
 Sources documentées : cinq dépôts + Learn2 — voir docs/documentation-sources.yml
-Dernière vérification : 2026-09-11
+Dernière vérification : 2026-09-14 (Lot 8)
 ```

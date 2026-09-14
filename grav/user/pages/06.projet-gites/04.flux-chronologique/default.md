@@ -26,7 +26,7 @@ est monolingue, à la différence de `projet-lavallee-website`.
 
 ## B. Premier démarrage
 
-Vérifié en direct pendant ce lot (voir [Tests et CI](08.tests-et-ci)).
+Vérifié en direct pendant ce lot (voir [Tests et CI](../08.tests-et-ci)).
 
 | # | Étape | Preuve |
 |---|---|---|
@@ -47,14 +47,14 @@ déploiement réel selon la documentation de ce dépôt.
 
 **Vérifié en direct, dans les deux sens** (mise à jour A→B **et** rollback
 B→A) via `tests/test-update-rollback.sh`, rejoué pendant ce lot — voir
-[Tests et CI](08.tests-et-ci) pour le détail des commandes.
+[Tests et CI](../08.tests-et-ci) pour le détail des commandes.
 
 | # | Étape | Preuve |
 |---|---|---|
 | 1 | Conservation des 4 volumes à travers un changement d'image | marqueurs écrits dans `pages`/`accounts` avant la mise à jour, **retrouvés intacts** après le passage à l'image B puis après le rollback vers l'image A |
 | 2 | Remplacement de l'immuable (thème, plugins, configuration) | le nouveau code (CSS modifié dans l'image B de test) devient actif immédiatement après le changement d'image, **sans action sur les volumes** |
 | 3 | Contenu qui n'est **jamais** reseedé | `docs/seed-lifecycle.md` : « aucune étape du cycle de vie de l'image… ne réinvoque une copie vers un volume déjà peuplé » — confirmé en direct : le marqueur ajouté à `user/pages/01.home/default.md` avant la mise à jour reste présent après |
-| 4 | Conséquence d'une modification effectuée depuis Admin | toute page éditée via `/admin` vit dans le volume `user/pages`, **jamais** dans l'image — une mise à jour d'image ultérieure ne l'écrase ni ne la synchronise ; elle reste strictement locale à cette instance tant qu'aucune migration volontaire n'est appliquée (voir [Adopter et étendre](10.adopter-et-etendre)) |
+| 4 | Conséquence d'une modification effectuée depuis Admin | toute page éditée via `/admin` vit dans le volume `user/pages`, **jamais** dans l'image — une mise à jour d'image ultérieure ne l'écrase ni ne la synchronise ; elle reste strictement locale à cette instance tant qu'aucune migration volontaire n'est appliquée (voir [Adopter et étendre](../10.adopter-et-etendre)) |
 
 **Rollback = mise à jour, du point de vue du mécanisme** : `docs/release-and-rollback.md`
 le formule explicitement — « un rollback est, du point de vue du rôle,
@@ -65,7 +65,7 @@ données, entièrement **manuel** (l'opérateur choisit la version cible).
 
 Chemin : `gite-item.html.twig` → formulaire partagé → `contact.php`. **Le
 mécanisme de routage diffère structurellement de `projet-lavallee-website`**
-— voir l'audit détaillé en [Référence](11.reference).
+— voir l'audit détaillé en [Référence](../11.reference).
 
 | # | Étape | Détail vérifié |
 |---|---|---|
@@ -81,7 +81,7 @@ cependant qualifié de « caché », changer le destinataire réel du
 message — confirmé empiriquement en environnement de test, avec des
 comptes synthétiques. Ce constat est référencé **SEC-GITES-001** ; sa
 fiche de synthèse (nature, impact, portée, statut) figure en
-[Référence](11.reference). La procédure de reproduction complète et les
+[Référence](../11.reference). La procédure de reproduction complète et les
 preuves détaillées ne sont volontairement pas publiées ici — elles sont
 conservées dans un rapport de sécurité séparé, hors de ce dépôt
 documentaire public.

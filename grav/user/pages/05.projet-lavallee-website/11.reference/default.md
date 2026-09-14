@@ -32,7 +32,7 @@ détectée par lecture comparative complète.
 
 Le formulaire de contact n'a été **réellement soumis** (les 7 charges de
 sécurité + les 2 soumissions valides, voir [Flux chronologique, chronologie
-D](04.flux-chronologique)) que contre la variante **française**
+D](../04.flux-chronologique)) que contre la variante **française**
 (`/fr/contact`). Aucune soumission réelle n'a été effectuée contre
 `/de/contact` ni `/en/contact` pendant ce lot.
 
@@ -112,7 +112,7 @@ D](04.flux-chronologique)) que contre la variante **française**
   Constat factuel, pas nécessairement une erreur : Grav n'offre pas de
   traduction de route par défaut sans mécanisme dédié, absent de ce dépôt.
 - **Dossier d'article sans préfixe numérique** — voir [Structure du
-  dépôt](03.structure-du-depot). Effet réel : **aucun**, sur l'ordre
+  dépôt](../03.structure-du-depot). Effet réel : **aucun**, sur l'ordre
   affiché à l'utilisateur (`articles-list.html.twig` et `homepage.html.twig`
   trient explicitement par `header.date`, ignorant l'ordre de dossier par
   défaut) — mais reste une incohérence de convention de nommage au niveau
@@ -127,10 +127,10 @@ D](04.flux-chronologique)) que contre la variante **française**
 | README | « Tested & Supported » : tests couvrent build, démarrage, présence, routes multilingues, **formulaire de contact**, persistance | `tests/` ne contient **aucun** test de soumission réelle du formulaire — `test-app-presence.sh` vérifie uniquement la présence du champ `nom` dans le HTML | **écart réel** : le README annonce une couverture du « contact form presence », ce qui est exact (présence, pas soumission) — mais un lecteur pressé pourrait comprendre « testé » comme « soumission vérifiée », ce qui n'est pas le cas dans ce dépôt |
 | `compose.dev.yml` | port `8080` | confirmé, et distinct des ports de test (`18080`-`18082`) et de l'audit de ce lot (`18095`-`18097`) | aucun |
 | `ci.yml` | « inerte tant que ce dépôt n'a pas de remote Git » | cohérent avec l'absence de run CI observable pour ce lot | aucun |
-| Version de `grav-runtime` | `1.0.4`, épinglée | identique au tag documenté au [Lot 3](../02.grav-runtime) | cohérent |
+| Version de `grav-runtime` | `1.0.4`, épinglée | identique au tag documenté au [Lot 3](../../02.grav-runtime) | cohérent |
 | Présence d'un tag applicatif | **aucun**, au commit audité | confirmé : `git tag --points-at c4341ca7` ne retourne rien (vérifié dans le worktree) | conforme aux instructions de ce lot, pas une anomalie |
 
-## Glossaire
+## Glossaire local
 
 | Terme | Définition |
 |---|---|

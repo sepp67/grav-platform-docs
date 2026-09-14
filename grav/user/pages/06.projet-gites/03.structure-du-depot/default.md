@@ -75,7 +75,7 @@ taxonomy:
 Vérifié par lecture directe de l'arborescence complète : pas de dossier
 `roles/`, `collections/`, `inventories/` ou `playbooks/` — confirmant
 l'absence de code Ansible dans ce dépôt, malgré une documentation détaillée
-de son usage prévu (voir [Place dans l'architecture](02.place-dans-architecture)).
+de son usage prévu (voir [Place dans l'architecture](../02.place-dans-architecture)).
 
 ---
 

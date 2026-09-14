@@ -110,7 +110,7 @@ l'applique automatiquement.
 
 ## Retirer un site du parc (procédure manuelle, voir chronologie E)
 
-Voir [Flux chronologique, chronologie E](04.flux-chronologique) pour la
+Voir [Flux chronologique, chronologie E](../04.flux-chronologique) pour la
 séquence complète. Rappel essentiel : le retrait n'est **jamais**
 automatisé par ce dépôt — c'est une édition manuelle du registre suivie
 d'un commit Git, validée a posteriori par `gso_lifecycle.py`.

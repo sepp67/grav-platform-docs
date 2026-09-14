@@ -85,7 +85,7 @@ collections:
 ```
 
 Le rôle est épinglé par **tag Git explicite**, jamais une branche — le
-même tag `v2.0.0` documenté au [Lot 4](../03.ansible-role-grav-site).
+même tag `v2.0.0` documenté au [Lot 4](../../03.ansible-role-grav-site).
 
 ---
 

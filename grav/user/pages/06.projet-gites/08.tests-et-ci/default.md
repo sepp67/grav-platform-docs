@@ -50,7 +50,7 @@ des comptes Grav **synthétiques**, jamais des comptes ni des adresses
 réels. Ce contrôle a confirmé un constat de sécurité, référencé
 **SEC-GITES-001** : la résolution du destinataire suit une donnée
 transmise par le client, pas la page réellement consultée. Fiche de
-synthèse, portée exacte du constat et statut en [Référence](11.reference)
+synthèse, portée exacte du constat et statut en [Référence](../11.reference)
 — procédure de reproduction et preuves détaillées conservées dans un
 rapport de sécurité séparé, hors de ce dépôt documentaire public.
 

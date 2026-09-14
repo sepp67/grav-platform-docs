@@ -58,7 +58,7 @@ taxonomy:
 **Anomalie de nommage relevée** : `05.articles/grav-plateforme-de-deploiement-reutilisable/`
 est le seul dossier d'article **sans préfixe numérique** (`NN.`), à la
 différence de `01.mfa-keycloak-privacyidea/`, `02.nextcloud-…/` et
-`03.proxmox-…/` qui suivent tous la convention. Voir [Référence](11.reference)
+`03.proxmox-…/` qui suivent tous la convention. Voir [Référence](../11.reference)
 pour l'analyse de son effet sur le tri.
 
 ## Aucun contenu métier hors ce périmètre
@@ -66,7 +66,7 @@ pour l'analyse de son effet sur le tri.
 Vérifié par lecture directe de l'arborescence complète : pas de dossier
 `roles/`, `collections/`, `inventories/` ou `playbooks/` — confirmant
 l'absence de tout branchement Ansible au commit audité (cohérent avec
-`docs/architecture.md`, voir [Place dans l'architecture](02.place-dans-architecture)).
+`docs/architecture.md`, voir [Place dans l'architecture](../02.place-dans-architecture)).
 
 ---
 

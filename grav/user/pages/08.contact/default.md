@@ -1,6 +1,7 @@
 ---
 title: Contact
 template: contact
+visible: false
 proprietaire: admin
 form:
   name: contact-form

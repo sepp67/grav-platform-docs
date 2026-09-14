@@ -30,7 +30,7 @@ Tous les tests executes sont au vert.
 
 `make test-functional` (GSO-T15, déploiement Docker réel) n'a **pas** été
 exécuté pour ce lot : il exige un conteneur Docker éphémère et l'image
-épinglée `ghcr.io/sepp67/grav-runtime:1.0.4`. Le [Lot 4](../03.ansible-role-grav-site)
+épinglée `ghcr.io/sepp67/grav-runtime:1.0.4`. Le [Lot 4](../../03.ansible-role-grav-site)
 a déjà produit une preuve de démarrage fonctionnel équivalente sur la
 même chaîne rôle+image ; relancer un déploiement Docker local ici
 n'apportait pas d'information nouvelle au regard de l'effort, et
@@ -45,7 +45,7 @@ Quatre statuts distincts sont utilisés dans ce document, jamais confondus :
 présent** (le script de test existe dans `tests/`), **test exécuté par
 moi** (résultat ci-dessus, sur ce tag, dans ce worktree), **rapporté par
 `docs/TEST-RESULTS.md`** (résultat déclaré par les auteurs du dépôt, sur
-un commit antérieur ou identique — voir écart en [Référence](11.reference)).
+un commit antérieur ou identique — voir écart en [Référence](../11.reference)).
 
 ## Matrice des tests et garanties
 
@@ -72,7 +72,7 @@ un commit antérieur ou identique — voir écart en [Référence](11.reference)
 | Gardes d'acceptation (licence, SPDX, copyright) | `l11-acceptance-guards` | statique | ✅ | job `static` | — |
 | Matrice de conformité cohérente (204 exigences) | `make matrix-check` | statique (génération + diff textuel) | ✅ (+ régénération manuelle dans un worktree séparé, Lot 5.1) | job `static` | vérifie la **cohérence interne** dépôt↔matrice, jamais que les 204 exigences ont été testées dynamiquement — voir analyse détaillée ci-dessous |
 | Rôle réellement installable (`ansible-galaxy`) | GSO-T03 | dynamique, nécessite le rôle | non exécuté isolément (installation du rôle nécessaire à `run-all.sh`, faite automatiquement) | job `role` | pas revérifié séparément — recouvert par l'exécution globale |
-| Déploiement fonctionnel réel (conteneur Docker + rôle + image épinglée) | **GSO-T15** | fonctionnel, nécessite Docker + image | ❌ non exécuté (voir ci-dessus) | **absent de la CI** (délibérément, par conception) | seule preuve dans `docs/TEST-RESULTS.md`, sur un commit antérieur au tag (voir [Référence](11.reference)) |
+| Déploiement fonctionnel réel (conteneur Docker + rôle + image épinglée) | **GSO-T15** | fonctionnel, nécessite Docker + image | ❌ non exécuté (voir ci-dessus) | **absent de la CI** (délibérément, par conception) | seule preuve dans `docs/TEST-RESULTS.md`, sur un commit antérieur au tag (voir [Référence](../11.reference)) |
 
 ## `docs/COMPLIANCE-MATRIX.md` : analyse complète (Lot 5.1, 257 lignes lues intégralement)
 
@@ -97,7 +97,7 @@ générateur change en même temps.
 | **Total** | **204** |
 
 Les 2 « Non encore démontré » sont `GSO-REQ-158` (tag sur un SHA à CI
-globale verte — voir l'écart de tag en [Référence](11.reference)) et
+globale verte — voir l'écart de tag en [Référence](../11.reference)) et
 `GSO-REQ-188` (migration réelle) — cohérent avec les deux domaines
 « BLOCKED » de `docs/ACCEPTANCE.md`.
 
@@ -120,7 +120,7 @@ d'autres documents (`docs/GOVERNANCE.md`, `docs/ACCEPTANCE.md`) — il n'a
 
 **Distinction documentaire / statique / fonctionnelle** : les 138 lignes
 « Satisfait et testé » citent un ou plusieurs identifiants `GSO-T*`/`l*-*`
-— mais, comme détaillé en [Sections de code](05.sections-de-code), cette
+— mais, comme détaillé en [Sections de code](../05.sections-de-code), cette
 citation est une **table tenue à la main**, jamais vérifiée
 automatiquement contre l'existence réelle du test cité. Les 47 lignes
 « Établi / documenté » pointent vers un fichier `docs/*.md` — une preuve
@@ -135,7 +135,7 @@ son contenu est cohérent avec le commit `48b9a59b` (204 exigences,
 statuts `GSO-REQ-158`/`188` encore « Non encore démontré », `main =
 d69a05a poussé` cité dans la synthèse — une référence à un commit
 **antérieur** au commit du tag lui-même, cohérent avec le constat déjà
-fait en [Référence](11.reference) que plusieurs documents du tag ont été
+fait en [Référence](../11.reference) que plusieurs documents du tag ont été
 rédigés avant sa finalisation).
 
 **Cohérence avec `docs/TEST-RESULTS.md` et `docs/ACCEPTANCE.md`** : les
@@ -144,7 +144,7 @@ release bloquée / migration bloquée) sont cohérents entre les trois
 documents — aucune fusion de périmètres observée. Aucun placeholder
 n'apparaît dans `COMPLIANCE-MATRIX.md` lui-même (contrairement à
 `docs/TEST-RESULTS.md`, qui porte un espace réservé non rempli pour le
-run CI du HEAD définitif — voir [Référence](11.reference)).
+run CI du HEAD définitif — voir [Référence](../11.reference)).
 
 ### Résultat de `make matrix-check` (Lot 5.1)
 
@@ -189,7 +189,7 @@ exigences ont été testées dynamiquement, que chaque preuve citée dans
 récemment, ou que la matrice reflète un état plus récent que le commit du
 tag — ces trois questions relèvent d'une lecture séparée du code des
 tests eux-mêmes (faite pour un échantillon, voir [Sections de
-code](05.sections-de-code)), jamais de `make matrix`/`matrix-check` seuls.
+code](../05.sections-de-code)), jamais de `make matrix`/`matrix-check` seuls.
 
 ## CI : six jobs, un seul gate
 

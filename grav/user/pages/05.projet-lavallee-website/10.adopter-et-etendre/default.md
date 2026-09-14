@@ -26,7 +26,7 @@ docker compose -f compose.dev.yml down -v
 Build local : `docker build -t <tag> .`. Publication réelle réservée au
 workflow `release.yml`, déclenché uniquement par un tag `v[0-9]+.[0-9]+.[0-9]+`
 ou un déclenchement manuel — jamais par un simple push. Voir [Flux
-chronologique, chronologie E](04.flux-chronologique) pour le détail complet
+chronologique, chronologie E](../04.flux-chronologique) pour le détail complet
 des tags OCI produits.
 
 ## Contrat de déploiement (tel qu'il existe au commit audité)
@@ -54,7 +54,7 @@ un dossier `NN.slug/` avec trois fichiers `default.md`/`default.en.md`/
 `default.de.md`, un `template:` valide (`page-simple`, `article`, ou un
 template dédié). Le seul écart de convention observé dans ce dépôt lui-même
 (dossier d'article sans préfixe numérique) est documenté en [Structure du
-dépôt](03.structure-du-depot) et [Référence](11.reference) — signalé, pas
+dépôt](../03.structure-du-depot) et [Référence](../11.reference) — signalé, pas
 corrigé (dépôt source non modifié par cette documentation).
 
 ---
