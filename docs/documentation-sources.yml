@@ -275,18 +275,98 @@ depots_documentes:
 
   - nom: projet-gites
     url: https://github.com/sepp67/projet-gites
-    reference: main
+    reference: main (aucun tag applicatif au commit documenté)
     commit: b27d7afa0c86461e94ab8c9ec53c557edb0afd0e
-    date_audit: "2026-09-12"
+    date_audit: >-
+      2026-09-12 (Lot 2, ciblé), complété le 2026-09-14
+      (Lot 7, audit complet)
+    methode: >
+      Worktree Git détaché sur le commit b27d7af (git worktree add
+      --detach), dépôt source non modifié. Build Docker réel, batterie de
+      tests du dépôt exécutée réellement (sh tests/run-all.sh : 6/6
+      réussis — build, startup, app-presence, secrets, persistence,
+      update-rollback). Audit du routage du formulaire de contact mené en
+      direct avec deux comptes Grav synthétiques créés dans un conteneur
+      de test jetable, contre un SMTP factice (Mailpit), sur un réseau
+      Docker et des ports dédiés, jamais 8080. Aucun compte, adresse ou
+      donnée personnelle réels reproduits dans cette documentation.
+    perimetre_lu_integralement: >
+      README.md, Dockerfile, .dockerignore, .gitignore, compose.dev.yml,
+      les 6 fichiers docs/*.md (architecture, runtime-contract,
+      compatibility-policy, seed-lifecycle, secrets-and-config, testing,
+      release-and-rollback), .github/workflows/{ci,release}.yml,
+      grav/user/config/{system,site,media,gites-photos-taxonomie}.yaml,
+      grav/user/config/plugins/{api,calendrier-disponibilites,email,login}.yaml,
+      grav/user/plugins/contact/{contact.php,contact.yaml},
+      grav/user/plugins/calendrier-disponibilites/
+      (calendrier-disponibilites.php, blueprints.yaml,
+      calendrier-disponibilites.yaml,
+      classes/{Availability,PeriodValidator,Permissions}.php),
+      grav/user/themes/gites-theme/ (gites-theme.yaml,
+      blueprints/gite-item.yaml, tous les templates : partials/base
+      hérité de quark2 non recopié ici, homepage.html.twig,
+      contact.html.twig, gite-item.html.twig, gite-photos.html.twig,
+      gerer-disponibilites.html.twig, forms/contact-email.html.twig,
+      partials/{calendrier,carte,galerie-apercu,galerie-section}.html.twig),
+      frontmatters et corps intégraux des 10 pages du seed (monolingue),
+      tests/ (lib.sh, run-all.sh, les 6 scripts test-*.sh, les 3 fixtures
+      email-private.*.php, compose.test.yml), LICENSE (en-tête).
+    perimetre_survole_non_lu_paragraphe_par_paragraphe: >
+      corps éditorial complet des fiches de gîtes lu pour la structure et
+      les données personnelles qu'il contient (non reproduites), mais non
+      commenté paragraphe par paragraphe conformément au périmètre du Lot
+      7 ; css/custom.css (334 lignes, taille confirmée, non lu ligne à
+      ligne) ; bibliothèque vendorisée Leaflet (JS/CSS/images, présence
+      confirmée, code non audité — bibliothèque tierce hors périmètre de
+      ce dépôt).
     perimetre: >
-      README.md, et listing (sans lecture de contenu détaillée) des fichiers
-      de grav/user/themes/gites-theme/ (gites-theme.yaml — mécanisme de
-      chaînage de flux vers quark2 — et templates/, notamment
-      gerer-disponibilites.html.twig, gite-photos.html.twig,
-      partials/galerie-*.html.twig) — audit ciblé pour la rubrique
-      Architecture globale (Lot 2) et pour valider le mécanisme de thème
-      enfant repris par grav-platform-docs. Audit complet du reste du dépôt
-      (plugins, pages, tests, CI) réservé au Lot 7.
+      Audit complet pour la rubrique 06.projet-gites (Lot 7) : cinq
+      chronologies (construction de l'image, premier démarrage,
+      redémarrage/mise à jour, parcours d'un visiteur, développement/test/
+      publication), comparaison architecturale avec
+      projet-lavallee-website, audit détaillé du routage du formulaire de
+      contact (falsification du champ caché "gite" confirmée en direct),
+      audit des données personnelles, matrice de classification des
+      fichiers, inventaire éditorial. Remplace et étend l'audit ciblé du
+      Lot 2 (mécanisme de chaînage de thème quark2 uniquement).
+    note: >
+      Écart réel et documenté, avec chronologie établie depuis l'historique
+      Git (lecture seule) : docs/compatibility-policy.md certifie
+      grav-runtime 1.0.2 comme seule version compatible connue depuis la
+      création du dépôt (2026-07-25), jamais mis à jour depuis, alors que
+      le Dockerfile référence grav-runtime:1.0.4 dès le 2026-08-05 — la
+      propre politique de certification du dépôt n'a pas été suivie. De
+      même, quatre fichiers de ce dépôt référencent systématiquement
+      "ansible-role-grav-site:1.0.1" depuis la même date d'origine, une
+      version différente du tag v2.0.0 déjà audité au Lot 4 — le tag
+      v1.0.1 existe réellement et a été vérifié ponctuellement pour ce
+      lot (worktree détaché temporaire, supprimé après lecture) :
+      l'exemple documenté était compatible avec v1.0.1 au moment de sa
+      rédaction, et reste majoritairement compatible avec v2.0.0, à
+      l'exception de grav_bind_address (devenu obligatoire depuis
+      v2.0.0, absent de l'exemple). Le commit
+      documenté (b27d7af) est lui-même daté du 2026-08-23 ; l'état actuel
+      du dépôt au-delà de ce commit n'a pas été revérifié. Une métadonnée
+      d'infrastructure historique (un nom d'hôte SMTP réel, sans
+      identifiant ni mot de passe associé) a été trouvée référencée dans
+      tests/test-secrets.sh comme garde de non-régression contre une fuite
+      passée déjà corrigée — nom non reproduit dans cette documentation
+      publique. Un constat de sécurité (SEC-GITES-001, routage du
+      formulaire de contact contrôlé par une donnée transmise par le
+      client) a été confirmé en environnement de test ; sa procédure de
+      reproduction complète est conservée hors de ce dépôt, dans un
+      rapport de sécurité privé non public (voir
+      private_security_report ci-dessous) — la documentation publique
+      n'en présente qu'une fiche de synthèse, sans détail exploitable.
+      Deux données personnelles réelles (adresses postales et coordonnées
+      GPS précises de deux gîtes, et un passage rédactionnel à la première
+      personne) sont présentes dans le contenu du dépôt et n'ont
+      volontairement pas été reproduites dans cette documentation.
+    private_security_report:
+      id: SEC-GITES-001
+      status: retained-outside-public-repository
+      sha256: 23ad766c385e4def7ab491a95d4d5fde263806b5f0b0d0a277a75ff25c69f691
+      public_content: sanitized-summary-only
 
 dependances_externes:
   - nom: grav-theme-learn2

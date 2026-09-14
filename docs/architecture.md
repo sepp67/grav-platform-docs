@@ -145,3 +145,49 @@ dupliquer une tâche de déploiement (appartient à `ansible-role-grav-site`) ;
 déclarer sa propre instance de déploiement (appartient à `grav-sites-ops`) ;
 committer un secret réel, un compte utilisateur réel ou une adresse de
 production.
+
+## Décision différée : future page authentifiée pour contenu sensible
+
+Constat du Lot 7 (audit de `projet-gites`) : certains constats d'audit
+(détail technique de vulnérabilités confirmées, procédures de
+reproduction) ne doivent jamais être publiés sur ce site tel qu'il est
+construit aujourd'hui — un site entièrement public, sans authentification.
+Une page réservée à un public restreint (mainteneurs des dépôts
+documentés) est envisagée pour une itération future, **pas construite
+maintenant**. Décision d'architecture posée à l'avance, pour cadrer ce
+travail futur :
+
+- `visible: false` ne constitue **pas** un contrôle d'accès — seulement
+  une absence du menu ; une page ainsi marquée reste atteignable par son
+  URL directe, sans restriction.
+- La future page exigera une **authentification Grav réelle** (compte,
+  identifiants), pas seulement une URL non référencée.
+- L'autorisation devra être **vérifiée côté serveur**, à chaque requête —
+  jamais seulement par un gabarit qui masque un lien ou un formulaire.
+- Le contenu sensible ne devra **jamais** être stocké dans ce dépôt public,
+  ni committé, ni versionné ici.
+- Il ne devra **jamais** être intégré à l'image Docker publique construite
+  depuis ce dépôt.
+- Il devra être **injecté depuis une source privée** directement dans un
+  volume persistant, hors du cycle de build/publication de l'image — le
+  mécanisme d'injection lui-même **reste entièrement à concevoir**,
+  aucune solution n'est retenue à ce stade.
+- Un accès direct à l'URL sans authentification valide devra retourner un
+  refus explicite (403) ou une redirection vers l'authentification —
+  jamais un contenu partiel ou une page silencieusement absente.
+- Les mécanismes de cache, flux RSS, recherche interne, sitemap et
+  indexation par des moteurs externes devront **exclure** cette page
+  explicitement.
+- Toute sauvegarde du volume contenant cette page devra recevoir la même
+  protection que le contenu lui-même (chiffrement, accès restreint).
+- Les comptes autorisés à consulter cette page devront recevoir un droit
+  **dédié et minimal**, distinct des droits d'administration générale du
+  site.
+
+**Aucune migration de contenu sensible n'a encore été effectuée** — cette
+section documente une intention et des contraintes, pas un mécanisme
+existant. Cette migration n'est pas planifiée avant, dans l'ordre : (1) la
+fin de la construction du site documentaire lui-même ; (2) la correction
+du constat identifié dans `projet-gites` (référence : rapport de sécurité
+privé associé, hors de ce dépôt) ; (3) un nouvel audit du dépôt une fois
+corrigé.
