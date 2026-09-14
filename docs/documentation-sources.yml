@@ -204,22 +204,74 @@ depots_documentes:
 
   - nom: projet-lavallee-website
     url: https://github.com/sepp67/projet-lavallee-website
-    reference: main
+    reference: main (aucun tag applicatif au commit documenté)
     commit: c4341ca77270565969e1e801e11a8fda72e5b402
-    date_audit: "2026-09-11"
+    date_audit: >-
+      2026-09-11 (Lot 2, ciblé), complété le 2026-09-14
+      (Lot 6, audit complet)
+    methode: >
+      Worktree Git détaché sur le commit c4341ca (git worktree add --detach),
+      dépôt source non modifié. Build Docker réel, batterie de tests du
+      dépôt exécutée réellement (sh tests/run-all.sh : 4/4 réussis — build,
+      startup, app-presence, persistence). Soumission réelle du formulaire
+      de contact contre un SMTP factice (Mailpit), sur un réseau Docker
+      dédié et un port dynamique (18095-18097), jamais 8080 (occupé par
+      projet-lavallee-dev, vérifié pré-existant/arrêté, non touché) ; le
+      fixture email-private.php utilisé vient du scratchpad de la session,
+      jamais copié dans le dépôt source.
+    perimetre_lu_integralement: >
+      README.md, Dockerfile, .dockerignore, .gitignore, compose.dev.yml,
+      docs/architecture.md, .github/workflows/ci.yml,
+      .github/workflows/release.yml, grav/user/config/system.yaml,
+      grav/user/config/site.yaml, grav/user/config/plugins/email.yaml,
+      grav/user/languages/{fr,en,de}.yaml, grav/user/plugins/contact/
+      (contact.php intégral, contact.yaml), grav/user/themes/lavallee-theme/
+      (lavallee-theme.yaml, tous les templates : partials/base.html.twig,
+      homepage.html.twig, contact.html.twig, page-simple.html.twig,
+      article.html.twig, articles-list.html.twig,
+      partials/article-card.html.twig, forms/contact-email.html.twig,
+      etude-cas-{matrix,flotte-mobile,grav}.html.twig),
+      frontmatters intégraux des 13 pages du seed × 3 langues (39 fichiers),
+      corps complet de grav/user/pages/01.home/default*.md et
+      04.mentions-legales/default*.md et
+      03.realisations/02.facturation/default*.md,
+      tests/ (lib.sh, run-all.sh, test-build.sh, test-startup.sh,
+      test-app-presence.sh, test-persistence.sh, compose.test.yml), LICENSE
+      (en-tête).
+    perimetre_survole_non_lu_paragraphe_par_paragraphe: >
+      corps complet des pages d'études de cas et des articles techniques
+      (structure, frontmatter, liens et médias vérifiés ; prose éditoriale
+      non commentée paragraphe par paragraphe, conformément au périmètre
+      du Lot 6) ; contenu détaillé de css/custom.css (410 lignes, taille
+      et présence confirmées, non lu ligne à ligne).
     perimetre: >
-      Dockerfile, compose.dev.yml, grav/user/plugins/contact/ (contact.php,
-      contact.yaml), grav/user/pages/06.contact/, grav/user/config/plugins/
-      email.yaml, grav/user/themes/lavallee-theme/templates/contact.html.twig
-      — audit ciblé sur la reprise du mécanisme du formulaire de contact
-      (cahier §10). Audit complet du reste du dépôt réservé au Lot 6.
+      Audit complet pour la rubrique 05.projet-lavallee-website (Lot 6) :
+      cinq chronologies (construction de l'image, premier démarrage,
+      redémarrage, soumission du formulaire, développement et publication),
+      matrice de classification des fichiers, inventaire éditorial et
+      multilingue, audit comportemental du formulaire de contact en
+      conditions réelles. Remplace et étend l'audit ciblé du Lot 2 (mécanisme
+      du formulaire de contact uniquement, cahier §10).
     note: >
       Aucun identifiant SMTP ni mot de passe n'est versionné. Les adresses
       d'expéditeur et de fallback (contact@lavallee.tech, from/to) sont en
       revanche présentes en clair dans grav/user/config/plugins/email.yaml
       — configuration non secrète du dépôt de référence, non reprise ici :
       grav-platform-docs utilise des adresses provisoires non fonctionnelles
-      (contact@example.invalid).
+      (contact@example.invalid). Écarts constatés lors de l'audit complet,
+      documentés dans la rubrique 05.projet-lavallee-website/11.reference :
+      lien LinkedIn du footer sans schéma https:// (cassé) ; sujet et corps
+      de l'e-mail de contact toujours en français quelle que soit la langue
+      du visiteur ; article "MFA/Keycloak" sans published_label dans les 3
+      langues (et, en DE/EN, une chaîne non booléenne assignée à la clé
+      réservée `published`) ; un dossier d'article sans préfixe numérique
+      (grav-plateforme-de-deploiement-reutilisable) ; deux pages
+      auto-déclarées incomplètes par le dépôt lui-même (mentions légales,
+      réalisation facturation) — transparence du dépôt source, pas une
+      découverte. Confirmé en direct : la validation anti-XSS et
+      anti-injection d'en-tête du formulaire est assurée par Grav Core, pas
+      par ce dépôt ; le honeypot n'est qu'un filtre partiel, pas une
+      protection anti-spam complète.
 
   - nom: projet-gites
     url: https://github.com/sepp67/projet-gites
