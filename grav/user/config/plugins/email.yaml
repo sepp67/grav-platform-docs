@@ -1,6 +1,6 @@
-from: contact@example.invalid
-from_name: 'grav-platform-docs'
-to: contact@example.invalid
+from: admin@lavallee.tech
+from_name: 'Lavallée Tech Documentation'
+to: info@lavallee.tech
 mailer:
   engine: smtp
 content_type: text/html
