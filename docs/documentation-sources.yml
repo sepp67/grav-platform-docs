@@ -275,21 +275,64 @@ depots_documentes:
 
   - nom: projet-gites
     url: https://github.com/sepp67/projet-gites
-    reference: main (aucun tag applicatif au commit documenté)
-    commit: b27d7afa0c86461e94ab8c9ec53c557edb0afd0e
+    reference: v1.1.0
+    commit: 7309bd1968c1f9a4ede93098d624cea46243aa0b
     date_audit: >-
       2026-09-12 (Lot 2, ciblé), complété le 2026-09-14
-      (Lot 7, audit complet)
+      (Lot 7, audit complet), correction SEC-GITES-001 développée et
+      publiée le 2026-09-15 (chantier FIX-GITES), audit final favorable
+      le 2026-09-15 (Lot 9) au tag publié v1.1.0
+    publication:
+      tag_git: v1.1.0
+      objet_tag_annote: 68a7b13e1bb2eb6a76877c467cf6fdd6fd8459a2
+      commit_du_tag: 7309bd1968c1f9a4ede93098d624cea46243aa0b
+      commit_de_fusion_sur_main: c052f216ddf3d3d42f1d63a0781a71bbdc67ca29
+      image_oci: ghcr.io/sepp67/projet-gites:1.1.0
+      digest_index_oci: sha256:bc68dd751a2d3154a8cd27788111d3d7d4ff9fd2a4174b882a77f1cb5e24eb34
+      digest_linux_amd64: sha256:271e9acd1ad564e4f1409d5840dc63ec3e84821bf901773b4f6ea04dcf0f69ac
+      revision_oci_observee: 7309bd1968c1f9a4ede93098d624cea46243aa0b
+      ci_publication: >
+        run GitHub Actions 34950442842 (« Build and publish projet-gites »,
+        déclenché par le push du tag v1.1.0, commit 7309bd1) — succès,
+        image poussée et vérifiée par digest et par étiquette
+        org.opencontainers.image.revision.
+      ci_fusion: >
+        run GitHub Actions 34949874668 (« CI — build and smoke tests »,
+        déclenché par le push sur main du commit de fusion c052f21) —
+        succès, incluant le test de routage du formulaire de contact
+        (60 assertions) et son test dédié de nettoyage temporaire.
+      note_ecart_sha: >
+        Le tag v1.1.0 pointe sur le commit 7309bd1, ancêtre direct du
+        commit de fusion c052f21 sur main (fusion à deux parents, sans
+        modification propre). Ce commit 7309bd1 (ainsi que les deux
+        commits qui le précèdent dans la même branche de correction) a
+        été réécrit par un réarrangement Git (rebase) avant fusion,
+        changeant uniquement les métadonnées auteur/committeur — le
+        contenu du correctif est resté rigoureusement identique (vérifié
+        par comparaison directe d'arbre Git, différence vide). Aucune
+        anomalie d'attribution constatée : l'identité republiée
+        correspond au nom public du compte GitHub propriétaire de ce
+        dépôt.
     methode: >
       Worktree Git détaché sur le commit b27d7af (git worktree add
-      --detach), dépôt source non modifié. Build Docker réel, batterie de
-      tests du dépôt exécutée réellement (sh tests/run-all.sh : 6/6
-      réussis — build, startup, app-presence, secrets, persistence,
-      update-rollback). Audit du routage du formulaire de contact mené en
-      direct avec deux comptes Grav synthétiques créés dans un conteneur
-      de test jetable, contre un SMTP factice (Mailpit), sur un réseau
-      Docker et des ports dédiés, jamais 8080. Aucun compte, adresse ou
-      donnée personnelle réels reproduits dans cette documentation.
+      --detach), dépôt source non modifié, pour l'audit initial (Lot 7).
+      Build Docker réel, batterie de tests du dépôt exécutée réellement
+      (sh tests/run-all.sh : 6/6 réussis — build, startup, app-presence,
+      secrets, persistence, update-rollback). Audit du routage du
+      formulaire de contact mené en direct avec deux comptes Grav
+      synthétiques créés dans un conteneur de test jetable, contre un SMTP
+      factice (Mailpit), sur un réseau Docker et des ports dédiés, jamais
+      8080. Aucun compte, adresse ou donnée personnelle réels reproduits
+      dans cette documentation. Correction et audit final (2026-09-15,
+      hors périmètre éditorial de grav-platform-docs, réalisés directement
+      dans le dépôt projet-gites, jamais dans ce dépôt) : worktrees Git
+      détachés successifs (préflight, implémentation, durcissements,
+      AUDIT FIX-GITES-R1, audit final au tag v1.1.0), suite de tests
+      étendue à 8 scripts (60 assertions dédiées au routage), rejouée
+      intégralement depuis le tag publié et directement contre l'image
+      réellement tirée de GHCR (pas seulement une reconstruction locale).
+      Rapport de sécurité privé correspondant tenu à jour en parallèle,
+      entièrement hors de ce dépôt et hors de projet-gites.
     perimetre_lu_integralement: >
       README.md, Dockerfile, .dockerignore, .gitignore, compose.dev.yml,
       les 6 fichiers docs/*.md (architecture, runtime-contract,
@@ -310,7 +353,18 @@ depots_documentes:
       partials/{calendrier,carte,galerie-apercu,galerie-section}.html.twig),
       frontmatters et corps intégraux des 10 pages du seed (monolingue),
       tests/ (lib.sh, run-all.sh, les 6 scripts test-*.sh, les 3 fixtures
-      email-private.*.php, compose.test.yml), LICENSE (en-tête).
+      email-private.*.php, compose.test.yml), LICENSE (en-tête). Ajouté
+      pour la correction et l'audit final (2026-09-15, au tag v1.1.0) :
+      grav/user/plugins/contact/contact.php intégral dans son état publié
+      (416 lignes — stratégie D, table serveur unique, réservation de
+      l'identifiant général, exclusion fermée des collisions, rejet
+      applicatif CR/LF), grav/user/plugins/contact/contact.yaml,
+      grav/user/pages/05.contact/default.md, le template
+      gite-item.html.twig et forms/contact-email.html.twig dans leur état
+      publié, tests/test-contact-routing.sh (60 assertions) et
+      tests/test-contact-routing-cleanup.sh intégraux, docs/security-notes.md
+      intégral, docs/compatibility-policy.md et docs/release-and-rollback.md
+      dans leur état publié, .github/workflows/ci.yml publié.
     perimetre_survole_non_lu_paragraphe_par_paragraphe: >
       corps éditorial complet des fiches de gîtes lu pour la structure et
       les données personnelles qu'il contient (non reproduites), mais non
@@ -329,44 +383,102 @@ depots_documentes:
       audit des données personnelles, matrice de classification des
       fichiers, inventaire éditorial. Remplace et étend l'audit ciblé du
       Lot 2 (mécanisme de chaînage de thème quark2 uniquement).
+    perimetre_correction_sec_gites_001: >
+      Travail réalisé directement dans projet-gites (jamais dans ce
+      dépôt), en plusieurs étapes tracées : préflight (analyse seule,
+      trois stratégies comparées) ; vérification expérimentale invalidant
+      la stratégie A (contexte serveur non discriminant, le formulaire
+      poste toujours vers /contact quelle que soit la fiche d'origine) ;
+      stratégie C (jeton signé) étudiée puis écartée par décision de
+      l'opérateur du dépôt (complexité disproportionnée à l'impact) ;
+      stratégie D retenue et implémentée (sélection visible et
+      obligatoire, table serveur unique) ; trois rounds de durcissement
+      (réservation de l'identifiant général, éligibilité stricte,
+      validation d'adresse, collisions fermées indépendantes de l'ordre,
+      rejet CR/LF applicatif) ; suite de tests étendue à 60 assertions
+      nommées, vérifiée capable de détecter la régression sur le code
+      pré-correctif ; AUDIT FIX-GITES-R1 (lecture de code indépendante du
+      commit avant fusion, worktree détaché dédié) ; correction d'un
+      défaut mineur de nettoyage de fichiers temporaires de test,
+      découvert par cet audit ; fusion via une pull request, CI distante
+      observée verte sur la fusion et sur la publication du tag v1.1.0 ;
+      audit final (Lot 9) au tag publié, incluant la vérification directe
+      de l'image GHCR par digest et par étiquette de révision, et le
+      rejeu des contrôles ciblés contre cette même image tirée du
+      registre.
     note: >
-      Écart réel et documenté, avec chronologie établie depuis l'historique
-      Git (lecture seule) : docs/compatibility-policy.md certifie
+      Écart historique constaté au commit b27d7af (Lot 7), conservé ici
+      pour mémoire avec sa chronologie établie depuis l'historique Git
+      (lecture seule) — **résolu depuis dans le tag v1.1.0**, voir la
+      suite de ce champ : docs/compatibility-policy.md certifiait
       grav-runtime 1.0.2 comme seule version compatible connue depuis la
       création du dépôt (2026-07-25), jamais mis à jour depuis, alors que
-      le Dockerfile référence grav-runtime:1.0.4 dès le 2026-08-05 — la
-      propre politique de certification du dépôt n'a pas été suivie. De
-      même, quatre fichiers de ce dépôt référencent systématiquement
+      le Dockerfile référençait grav-runtime:1.0.4 dès le 2026-08-05 — la
+      propre politique de certification du dépôt n'avait pas été suivie. De
+      même, quatre fichiers de ce dépôt référençaient systématiquement
       "ansible-role-grav-site:1.0.1" depuis la même date d'origine, une
       version différente du tag v2.0.0 déjà audité au Lot 4 — le tag
-      v1.0.1 existe réellement et a été vérifié ponctuellement pour ce
+      v1.0.1 existe réellement et avait été vérifié ponctuellement pour ce
       lot (worktree détaché temporaire, supprimé après lecture) :
       l'exemple documenté était compatible avec v1.0.1 au moment de sa
-      rédaction, et reste majoritairement compatible avec v2.0.0, à
+      rédaction, et restait majoritairement compatible avec v2.0.0, à
       l'exception de grav_bind_address (devenu obligatoire depuis
-      v2.0.0, absent de l'exemple). Le commit
-      documenté (b27d7af) est lui-même daté du 2026-08-23 ; l'état actuel
-      du dépôt au-delà de ce commit n'a pas été revérifié. Une métadonnée
+      v2.0.0, absent de l'exemple à l'époque).
+      **Résolution (tag v1.1.0)** : docs/compatibility-policy.md enregistre
+      désormais une ligne "1.1.0" certifiant grav-runtime 1.0.4 (la
+      version réellement construite), sur la base de la suite de tests de
+      ce même chantier ; les quatre fichiers citant
+      "ansible-role-grav-site:1.0.1" référencent désormais "v2.0.0", avec
+      grav_bind_address ajouté explicitement à l'exemple de déploiement —
+      compatibilité vérifiée statiquement contre le code et le guide de
+      migration du rôle, **aucun déploiement Ansible réel exécuté** pour
+      cette vérification. **Dette documentaire résiduelle constatée dans
+      le tag publié v1.1.0** (non corrigée par ce lot, ni par
+      grav-platform-docs, qui ne modifie jamais projet-gites) :
+      docs/compatibility-policy.md qualifie encore la ligne "1.1.0" de
+      "proposée — non encore taguée", et docs/security-notes.md qualifie
+      encore SEC-GITES-001 de "en attente de release" avec un "numéro de
+      version corrigée : à déterminer" — ces deux formulations étaient
+      exactes au moment de leur rédaction (avant la création du tag) mais
+      sont désormais factuellement dépassées dans le tag publié lui-même ;
+      le tag v1.1.0 ne doit jamais être déplacé pour les corriger
+      rétroactivement, une correction éventuelle relève d'une version
+      ultérieure de projet-gites. Le commit
+      documenté à l'origine (b27d7af) restait daté du 2026-08-23 ; une métadonnée
       d'infrastructure historique (un nom d'hôte SMTP réel, sans
       identifiant ni mot de passe associé) a été trouvée référencée dans
       tests/test-secrets.sh comme garde de non-régression contre une fuite
       passée déjà corrigée — nom non reproduit dans cette documentation
       publique. Un constat de sécurité (SEC-GITES-001, routage du
       formulaire de contact contrôlé par une donnée transmise par le
-      client) a été confirmé en environnement de test ; sa procédure de
-      reproduction complète est conservée hors de ce dépôt, dans un
-      rapport de sécurité privé non public (voir
-      private_security_report ci-dessous) — la documentation publique
-      n'en présente qu'une fiche de synthèse, sans détail exploitable.
-      Deux données personnelles réelles (adresses postales et coordonnées
-      GPS précises de deux gîtes, et un passage rédactionnel à la première
-      personne) sont présentes dans le contenu du dépôt et n'ont
-      volontairement pas été reproduites dans cette documentation.
+      client) a été confirmé en environnement de test au commit b27d7af,
+      puis corrigé et publié dans le tag v1.1.0 (voir publication
+      ci-dessus) : le champ devient une sélection visible et obligatoire,
+      résolue exclusivement depuis une table serveur unique — voir la
+      rubrique, page "Référence", pour la fiche de synthèse mise à jour
+      (statut, chronologie complète de la correction, limites du constat
+      d'origine). La procédure de reproduction complète du constat
+      d'origine reste conservée hors de ce dépôt, dans un rapport de
+      sécurité privé non public (voir private_security_report ci-dessous)
+      — la documentation publique n'en présente qu'une fiche de synthèse,
+      sans détail exploitable, y compris après correction. Deux données
+      personnelles réelles (adresses postales et coordonnées GPS précises
+      de deux gîtes, et un passage rédactionnel à la première personne)
+      sont présentes dans le contenu du dépôt et n'ont volontairement pas
+      été reproduites dans cette documentation — inchangé par la
+      correction, qui ne touche pas ce contenu éditorial.
     private_security_report:
       id: SEC-GITES-001
-      status: retained-outside-public-repository
-      sha256: 23ad766c385e4def7ab491a95d4d5fde263806b5f0b0d0a277a75ff25c69f691
+      status: corrected-and-published-v1.1.0
+      sha256: e5448d1ee8e60a4432fadc315ac2fbfde1615d7f6bba80441bbc0c99e3c6f181
       public_content: sanitized-summary-only
+      note: >
+        Le rapport privé reste entièrement hors de ce dépôt, hors de
+        projet-gites, et hors de toute image Docker — seul son SHA-256
+        est enregistré ici, jamais son chemin local. Mis à jour à chaque
+        étape de la correction (préflight, implémentation, durcissements,
+        AUDIT FIX-GITES-R1, audit final au tag v1.1.0) ; le SHA-256
+        ci-dessus correspond à son état après l'audit final.
 
 dependances_externes:
   - nom: grav-theme-learn2

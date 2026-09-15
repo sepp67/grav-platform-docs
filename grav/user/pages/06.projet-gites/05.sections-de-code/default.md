@@ -5,30 +5,65 @@ taxonomy:
     category: [docs]
 ---
 
-## `grav/user/plugins/contact/contact.php` (98 lignes, lu intégralement)
+## `grav/user/plugins/contact/contact.php` (416 lignes dans le tag `v1.1.0`, lu intégralement)
 
-Structure proche de `projet-lavallee-website` (même `loadEmailPrivateConfig()`,
-même honeypot), avec **deux différences structurelles** :
+**Réécrit pour corriger SEC-GITES-001** (au commit `b27d7af`, 98 lignes —
+voir [Référence](../11.reference) pour le constat d'origine). Conserve du
+code partagé avec `projet-lavallee-website` : `loadEmailPrivateConfig()`,
+le honeypot (champ **rendu** par le plugin Form de Grav, **lecture et
+rejet** de sa valeur assurés par ce plugin contact — distinction
+explicitement documentée dans le code lui-même). Structure du mécanisme
+de routage corrigé, entièrement nouvelle :
 
-- **`resolveProprietaireEmail(?string $giteRoute)`** — le paramètre est
-  **nullable mais sans valeur par défaut** (pas de `= null`). Il n'existe
-  aucun appel dans ce dépôt qui omette l'argument (le seul point d'appel,
-  `05.contact/default.md`, passe toujours `form.value('gite')`, potentiellement
-  une chaîne vide mais jamais littéralement absente). Le corps de la
-  fonction gère explicitement le cas d'une chaîne vide (`!$giteRoute` est
-  vrai pour `''`, retourne le fallback), donc ce détail reste sans
-  conséquence observée dans ce dépôt — voir [Référence](../11.reference) pour
-  la discussion complète du routage.
-- **Validation domaine additionnelle** dans `onFormValidationProcessed()` :
-  si `date_arrivee` et `date_depart` sont toutes deux renseignées et que
-  `date_depart < date_arrivee`, une `ValidationException` est levée avec
-  un message dédié. **Vérifié en direct** : rejet confirmé, HTTP 200, sans
-  redirection, message « La date de départ doit être postérieure ou égale
-  à la date d'arrivée. » — rendu par Grav dans une bannière de classe CSS
-  `toast toast-error`, **différente** de la classe `notices error` utilisée
-  pour les rejets détectés par la validation interne de Grav Core (XSS,
-  format) — deux mécanismes de rendu distincts pour deux origines de rejet
-  distinctes.
+- **`contactTable()`** (méthode privée) — **source de vérité unique** :
+  produit une table structurée `identifiant public => libellé, type
+  (gîte/général), page Grav, nom de compte, adresse déjà validée`. Le
+  fournisseur d'options affichées, la validation de soumission et la
+  résolution du destinataire lisent tous les trois **exactement cette
+  même table**, jamais trois logiques recalculées séparément — propriété
+  vérifiée par lecture directe du code, pas déduite.
+- **Identifiant `general` réservé** — inséré dans la table **avant** tout
+  parcours des pages de gîte (si `plugins.email.to` est syntaxiquement
+  valide), et une page dont le slug vaudrait littéralement `general` est
+  exclue en amont : aucune page de gîte ne peut jamais l'écraser.
+- **`eligibleGitePages()`** — une page n'est candidate que si elle est
+  enfant **direct** du sous-arbre configuré, `routable()` (combine déjà
+  publication et routabilité côté Grav Core), du template métier attendu,
+  dotée d'un identifiant public conforme à un format explicite
+  (minuscules ASCII, chiffres, tiret simple), et d'un `proprietaire`
+  renseigné. **`visible` n'intervient jamais** dans ce filtre : une fiche
+  publiée, routable, retirée du sommaire reste contactable.
+- **Collisions d'identifiant — échec fermé** : les pages éligibles sont
+  regroupées par identifiant *avant* toute résolution d'adresse ; un
+  identifiant porté par plus d'une page est exclu **intégralement**
+  (aucune option, aucune résolution possible), indépendamment de l'ordre
+  des pages et même si l'une d'elles aurait par ailleurs une adresse
+  valide — jamais une priorité au premier arrivé.
+- **Validation d'adresse** — `filter_var(..., FILTER_VALIDATE_EMAIL)`,
+  déjà disponible en PHP, aucune dépendance ajoutée ; une adresse absente,
+  vide ou syntaxiquement invalide exclut la page (ou l'option générale)
+  de la table.
+- **Rejet CR/LF applicatif** — `onFormValidationProcessed()` rejette
+  désormais explicitement toute valeur contenant `\r` ou `\n` dans
+  `email` (alimente l'en-tête Reply-To) ou `nom` (alimente le sujet),
+  **avant tout traitement** — un message générique, sans jamais réafficher
+  la valeur fautive. `message` n'est volontairement pas concerné (usage
+  légitime d'une zone de texte, contenu échappé dans le gabarit HTML).
+- **`Blueprint::addAllowedDynamicCallable()`** — le champ `gite` obtient
+  ses options via `data-options@` (blueprint) ; ce Grav Core impose une
+  allowlist des callables `Class::method` admissibles pour ce mécanisme —
+  une seule callable statique y est enregistrée
+  (`ContactPlugin::contactGiteOptionsProvider`), qui ne retourne que des
+  paires identifiant/libellé public, jamais la page, le compte ni
+  l'adresse.
+- **Validation domaine additionnelle** (inchangée) dans
+  `onFormValidationProcessed()` : si `date_arrivee` et `date_depart` sont
+  toutes deux renseignées et que `date_depart < date_arrivee`, une
+  `ValidationException` est levée avec un message dédié — rejet confirmé
+  historiquement (Lot 7), HTTP 200, sans redirection.
+
+Preuve de non-régression : `tests/test-contact-routing.sh`, 60 assertions
+nommées, détail complet en [Tests et CI](../08.tests-et-ci).
 
 ## `grav/user/plugins/calendrier-disponibilites/` — 4 fichiers, lus intégralement
 
@@ -111,10 +146,11 @@ les coordonnées sont non nulles.
 
 ```yaml
 Source documentée : https://github.com/sepp67/projet-gites
-Référence : commit b27d7afa0c86461e94ab8c9ec53c557edb0afd0e
+Référence : tag v1.1.0 (commit 7309bd1968c1f9a4ede93098d624cea46243aa0b)
 Fichiers principaux : grav/user/plugins/contact/contact.php,
   grav/user/plugins/calendrier-disponibilites/{calendrier-disponibilites.php,classes/*.php},
   grav/user/themes/gites-theme/templates/gerer-disponibilites.html.twig,
-  grav/user/themes/gites-theme/templates/partials/{galerie-apercu,galerie-section,carte}.html.twig
-Dernière vérification : 2026-09-14
+  grav/user/themes/gites-theme/templates/partials/{galerie-apercu,galerie-section,carte}.html.twig,
+  tests/test-contact-routing.sh
+Dernière vérification : 2026-09-15
 ```

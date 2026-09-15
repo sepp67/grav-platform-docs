@@ -58,7 +58,7 @@ hors périmètre de ce dépôt.
 
 ```yaml
 Source documentée : https://github.com/sepp67/projet-gites
-Référence : commit b27d7afa0c86461e94ab8c9ec53c557edb0afd0e
+Référence : tag v1.1.0 (commit 7309bd1968c1f9a4ede93098d624cea46243aa0b)
 Fichiers principaux : Dockerfile, .gitignore, .dockerignore, tests/test-secrets.sh, docs/secrets-and-config.md
-Dernière vérification : 2026-09-14
+Dernière vérification : 2026-09-15
 ```

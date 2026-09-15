@@ -5,7 +5,7 @@ taxonomy:
     category: [docs]
 ---
 
-## Arborescence au commit `b27d7af`
+## Arborescence au tag `v1.1.0` (commit `7309bd1`)
 
 ```text
 .
@@ -15,9 +15,9 @@ taxonomy:
 ├── compose.dev.yml            développement local UNIQUEMENT (port 8080)
 ├── LICENSE                    MIT
 ├── README.md
-├── docs/                      SIX fichiers de documentation interne détaillée (voir ci-dessous)
+├── docs/                      SEPT fichiers de documentation interne détaillée (voir ci-dessous)
 ├── .github/workflows/
-│   ├── ci.yml                 build + 4 tests rapides, sur chaque push/PR
+│   ├── ci.yml                 build + 5 tests rapides, sur chaque push/PR
 │   └── release.yml            publication GHCR, sur tag v*.*.* uniquement
 ├── grav/user/
 │   ├── config/
@@ -27,7 +27,7 @@ taxonomy:
 │   │   ├── gites-photos-taxonomie.yaml   6 catégories de photos
 │   │   └── plugins/{api,calendrier-disponibilites,email,login}.yaml
 │   ├── plugins/
-│   │   ├── contact/               contact.php (routage par gîte) + contact.yaml
+│   │   ├── contact/               contact.php (table serveur unique, SEC-GITES-001 corrigé) + contact.yaml
 │   │   └── calendrier-disponibilites/
 │   │       ├── calendrier-disponibilites.php   hook onPageInitialized + Twig
 │   │       ├── blueprints.yaml
@@ -42,21 +42,24 @@ taxonomy:
 └── tests/
     ├── lib.sh, run-all.sh
     ├── test-{build,startup,app-presence,secrets,persistence,update-rollback}.sh   6 scripts
+    ├── test-contact-routing.sh              60 assertions nommées (routage, collisions, CR/LF, XSS)
+    ├── test-contact-routing-cleanup.sh      non-régression du nettoyage de fichiers temporaires
     ├── fixtures/email-private.{valid,invalid-nonarray,syntax-error}.php
-    └── compose.test.yml            stack à 4 volumes, réservé à 2 des 6 tests
+    └── compose.test.yml            stack à 4 volumes, réservé à 2 des 8 tests
 ```
 
-## Les six fichiers `docs/*.md` — absents de `projet-lavallee-website`
+## Les sept fichiers `docs/*.md` — absents de `projet-lavallee-website`
 
 | Fichier | Contenu |
 |---|---|
 | `architecture.md` | les trois couches, ce que chacune possède/ne possède jamais |
 | `runtime-contract.md` | synthèse du contrat exposé par `grav-runtime` (chemins, healthcheck, seed, variables, bootstrap, permissions, arrêt) |
-| `compatibility-policy.md` | politique et matrice de certification de version envers `grav-runtime` |
+| `compatibility-policy.md` | politique et matrice de certification de version envers `grav-runtime` — certifie `1.1.0`/`1.0.4` dans ce tag |
 | `seed-lifecycle.md` | classification du contenu initial, garanties du seed, méthodes de migration volontaire (non implémentées) |
 | `secrets-and-config.md` | classification complète de `user/config`, mécanisme SMTP, structure attendue du secret |
-| `testing.md` | détail de chaque script de test, ce qui est automatisé en CI |
+| `testing.md` | détail de chaque script de test (8 désormais), ce qui est automatisé en CI |
 | `release-and-rollback.md` | cycle complet développement → build → tag → publication → déploiement → mise à jour → rollback |
+| `security-notes.md` | **nouveau dans `v1.1.0`** — fiche SEC-GITES-001 : défaut, correctif, preuve de non-régression |
 
 ## Pages du seed (`grav/user/pages/`) — monolingue
 
@@ -81,7 +84,7 @@ de son usage prévu (voir [Place dans l'architecture](../02.place-dans-architect
 
 ```yaml
 Source documentée : https://github.com/sepp67/projet-gites
-Référence : commit b27d7afa0c86461e94ab8c9ec53c557edb0afd0e
-Fichiers principaux : git ls-tree -r b27d7af (listing complet du dépôt)
-Dernière vérification : 2026-09-14
+Référence : tag v1.1.0 (commit 7309bd1968c1f9a4ede93098d624cea46243aa0b)
+Fichiers principaux : git ls-tree -r 7309bd1 (listing complet du dépôt)
+Dernière vérification : 2026-09-15
 ```

@@ -15,24 +15,31 @@ seconde), déjà citée en référence dans le [contrat d'architecture
 globale](../01.architecture-globale) et dans la rubrique
 [projet-lavallee-website](../05.projet-lavallee-website).
 
-**Ce dépôt ne possède aucun tag applicatif** au moment de cet audit. Cette
-rubrique fige donc son périmètre sur un **commit précis**, jamais sur « la
+Cette rubrique fige son périmètre sur le tag Git publié **`v1.1.0`**
+(commit `7309bd1968c1f9a4ede93098d624cea46243aa0b`), jamais sur « la
 branche `main` actuelle » :
 
 ```yaml
-Branche informative : main
-Commit documenté : b27d7afa0c86461e94ab8c9ec53c557edb0afd0e
+Tag publié : v1.1.0
+Commit du tag : 7309bd1968c1f9a4ede93098d624cea46243aa0b
+Image publiée : ghcr.io/sepp67/projet-gites:1.1.0
+Digest OCI (index) : sha256:bc68dd751a2d3154a8cd27788111d3d7d4ff9fd2a4174b882a77f1cb5e24eb34
 ```
 
-Toute affirmation de cette rubrique vaut pour ce commit exact — voir
-`docs/documentation-sources.yml` pour le détail du périmètre lu.
+Toute affirmation de cette rubrique vaut pour ce tag exact — voir
+`docs/documentation-sources.yml` pour le détail du périmètre lu et la
+correspondance vérifiée entre le commit Git et l'image publiée.
 
-**Écart notable, documenté dès cette page** : la documentation propre de ce
-dépôt (`docs/compatibility-policy.md`) certifie explicitement
-`grav-runtime 1.0.2` comme seule version compatible connue — mais le
-`Dockerfile` du même commit référence `grav-runtime:1.0.4`. Cet écart entre
-la matrice de compatibilité déclarée et le code réel est documenté en
-détail dans [Référence](11.reference).
+**SEC-GITES-001 : corrigé et publié.** L'audit initial (Lot 7, commit
+`b27d7af`) avait confirmé un constat de sécurité sur le routage du
+formulaire de contact. Il a depuis été corrigé (sélection visible et
+obligatoire, résolue exclusivement côté serveur) et publié dans ce même
+tag `v1.1.0` — fiche de synthèse, chronologie complète de la correction et
+statut détaillé dans [Référence](11.reference). Les écarts de version
+constatés lors de l'audit initial (`grav-runtime`, `ansible-role-grav-site`)
+sont également résolus dans ce tag ; une dette purement documentaire,
+sans effet de sécurité, subsiste dans deux fichiers du dépôt — voir
+[Référence](11.reference).
 
 Parcours de lecture recommandé :
 
@@ -66,7 +73,8 @@ Parcours de lecture recommandé :
 
 ```yaml
 Source documentée : https://github.com/sepp67/projet-gites
-Référence : commit b27d7afa0c86461e94ab8c9ec53c557edb0afd0e (branche main, aucun tag applicatif)
-Dernière vérification : 2026-09-14
-Méthode : worktree Git détaché sur le commit (dépôt source non modifié)
+Référence : tag v1.1.0 (commit 7309bd1968c1f9a4ede93098d624cea46243aa0b)
+Dernière vérification : 2026-09-15
+Méthode : worktrees Git détachés (dépôt source jamais modifié) ; image
+  publiée vérifiée directement sur GHCR (digest, étiquette de révision)
 ```

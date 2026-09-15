@@ -65,26 +65,33 @@ données, entièrement **manuel** (l'opérateur choisit la version cible).
 
 Chemin : `gite-item.html.twig` → formulaire partagé → `contact.php`. **Le
 mécanisme de routage diffère structurellement de `projet-lavallee-website`**
-— voir l'audit détaillé en [Référence](../11.reference).
+— voir l'audit détaillé en [Référence](../11.reference). Mécanisme
+**corrigé dans le tag `v1.1.0`** (stratégie D — sélection visible et
+validation serveur fermée, voir SEC-GITES-001 en [Référence](../11.reference)) ;
+description ci-dessous conforme à cet état publié.
 
 | # | Étape | Détail vérifié |
 |---|---|---|
 | 1 | Consultation d'une fiche de gîte | `/gites/gite-un` ou `/gites/gite-deux` — page `gite-item`, rendu hérité de `quark2` |
 | 2 | Page concernée et propriétaire associé | `page.header.proprietaire` (`proprio-gite-1` ou `proprio-gite-2`) — lu directement du frontmatter, jamais transmis en clair au visiteur |
-| 3 | Ouverture du formulaire | `{% set contact_form = forms('contact-form') %} {% do contact_form.setData('gite', page.route) %}` — le champ caché `gite` est pré-rempli **côté serveur** avec la route de la page actuelle |
-| 4 | Soumission | POST vers la même page, traité par le Form plugin de Grav Core |
-| 5 | Sélection du destinataire | `proprietaire_email(form.value('gite'))` — **le paramètre de route vient directement de la valeur soumise dans le champ caché**, pas d'une valeur recalculée côté serveur à la soumission |
-| 6 | Confirmation | `redirect: /contact/confirmation` — route unique, monolingue |
+| 3 | Ouverture du formulaire | `{% set contact_form = forms('contact-form') %} {% do contact_form.setData('gite', page.slug) %}` — le champ `gite` est un **sélecteur visible et obligatoire** ; sa présélection sur la fiche courante reste une aide ergonomique côté client, jamais une preuve de sécurité |
+| 4 | Construction des options affichées | table serveur unique (`ContactPlugin::contactTable()`) : enfants directs du sous-arbre des gîtes, routables, du bon template, slug conforme, propriétaire renseigné, compte existant, adresse syntaxiquement valide — une option « Demande générale » n'apparaît que si l'adresse globale est elle-même valide |
+| 5 | Soumission | POST vers la même page, traité par le Form plugin de Grav Core, puis par la validation applicative de ce plugin (honeypot, rejet CR/LF explicite dans `nom`/`email`, puis validation de la sélection) |
+| 6 | Sélection du destinataire | l'identifiant soumis sert **uniquement de clé de lookup** dans la même table serveur, recalculée à cet instant — jamais une route, une adresse ou un nom de compte transmis par le visiteur n'est utilisé directement ; une valeur absente, inconnue ou correspondant à un identifiant collisionné est rejetée avant tout traitement, sans repli silencieux |
+| 7 | Confirmation | `redirect: /contact/confirmation` — route unique, monolingue |
 
-**Vérifié en direct (Lot 7)** : un visiteur peut, en modifiant un champ
-cependant qualifié de « caché », changer le destinataire réel du
-message — confirmé empiriquement en environnement de test, avec des
-comptes synthétiques. Ce constat est référencé **SEC-GITES-001** ; sa
-fiche de synthèse (nature, impact, portée, statut) figure en
-[Référence](../11.reference). La procédure de reproduction complète et les
-preuves détaillées ne sont volontairement pas publiées ici — elles sont
-conservées dans un rapport de sécurité séparé, hors de ce dépôt
-documentaire public.
+**Historique — constat SEC-GITES-001 (corrigé)** : au commit `b27d7af`
+(Lot 7), ce même champ était de type `hidden`, prérempli côté serveur
+avec la route de la fiche affichée mais **jamais revalidé à la
+soumission** — un visiteur pouvait, en modifiant ce champ cependant
+qualifié de « caché », changer le destinataire réel du message, confirmé
+empiriquement en environnement de test avec des comptes synthétiques.
+Fiche de synthèse complète (nature, impact, portée, statut, chronologie
+de la correction) en [Référence](../11.reference). La procédure de
+reproduction complète et les preuves détaillées du constat d'origine ne
+sont volontairement pas publiées ici — elles restent conservées dans un
+rapport de sécurité séparé, hors de ce dépôt documentaire public, y
+compris après correction.
 
 ## E. Développement, test et publication
 
@@ -92,19 +99,19 @@ documentaire public.
 |---|---|---|
 | 1 | Développement local | `docker compose -f compose.dev.yml up -d --build` — port `8080`, 4 volumes nommés séparés |
 | 2 | Build local reproductible | `docker build --pull`, 3 tentatives (`tests/test-build.sh`) — **exécuté réellement** pendant ce lot |
-| 3 | Tests disponibles | **6 scripts** (`build`, `startup`, `app-presence`, `secrets`, `persistence`, `update-rollback`) — les 6 **exécutés réellement** pendant ce lot, 0 échec |
-| 4 | Workflow CI (`ci.yml`) | déclenché sur tout push/PR ; exécute 4 des 6 scripts (`build`, `startup`, `app-presence`, `secrets`) — `persistence` et `update-rollback` **exclus**, réservés à une exécution manuelle avant release |
-| 5 | Conditions de publication (`release.yml`) | déclenché **uniquement** par un tag SemVer (`v[0-9]+.[0-9]+.[0-9]+`) ou un déclenchement manuel |
-| 6 | Tags OCI produits | `{{version}}`, `{{major}}.{{minor}}`, `{{major}}` + `latest` (uniquement sur tag poussé, même mécanisme que `projet-lavallee-website`) |
-| 7 | Relation ultérieure avec `grav-sites-ops` | **aucune constatée** au commit audité — le nom d'image `ghcr.io/sepp67/projet-gites` n'apparaît dans aucun fichier des dépôts `grav-sites-ops`/`ansible-role-grav-site` déjà documentés (Lots 4 et 5) ; `docs/release-and-rollback.md` documente un exemple de playbook Ansible complet, mais contre `ansible-role-grav-site:1.0.1` — une version différente du tag `v2.0.0` déjà audité |
+| 3 | Tests disponibles | **8 scripts** (`build`, `startup`, `app-presence`, `contact-routing` [60 assertions], `contact-routing-cleanup`, `secrets`, `persistence`, `update-rollback`) — les 8 **exécutés réellement** (Lot 7 puis Lot 9, au tag `v1.1.0`), 0 échec |
+| 4 | Workflow CI (`ci.yml`) | déclenché sur tout push/PR ; exécute 5 des 8 scripts (`build`, `startup`, `app-presence`, `contact-routing`, `contact-routing-cleanup`, `secrets`) — `persistence` et `update-rollback` **exclus**, réservés à une exécution manuelle avant release ; **runs CI distants réellement observés** pour la correction SEC-GITES-001 (fusion et publication du tag, voir [Référence](../11.reference)) |
+| 5 | Conditions de publication (`release.yml`) | déclenché **uniquement** par un tag SemVer (`v[0-9]+.[0-9]+.[0-9]+`) ou un déclenchement manuel — **réellement déclenché** pour `v1.1.0`, run observé vert, image publiée et vérifiée par digest |
+| 6 | Tags OCI produits | `{{version}}`, `{{major}}.{{minor}}`, `{{major}}` + `latest` (uniquement sur tag poussé, même mécanisme que `projet-lavallee-website`) — jamais `latest` à recommander en déploiement |
+| 7 | Relation ultérieure avec `grav-sites-ops` | **aucune constatée** au tag `v1.1.0` — le nom d'image `ghcr.io/sepp67/projet-gites` n'apparaît toujours dans aucun fichier des dépôts `grav-sites-ops`/`ansible-role-grav-site` déjà documentés (Lots 4 et 5) ; `docs/release-and-rollback.md` documente un exemple de playbook Ansible complet, désormais contre `ansible-role-grav-site:2.0.0` (aligné sur le tag déjà audité, compatibilité vérifiée statiquement seulement — aucun déploiement réel) |
 
 ---
 
 ```yaml
 Source documentée : https://github.com/sepp67/projet-gites
-Référence : commit b27d7afa0c86461e94ab8c9ec53c557edb0afd0e
-Fichiers principaux : Dockerfile, docs/{runtime-contract,seed-lifecycle,release-and-rollback}.md,
+Référence : tag v1.1.0 (commit 7309bd1968c1f9a4ede93098d624cea46243aa0b)
+Fichiers principaux : Dockerfile, docs/{runtime-contract,seed-lifecycle,release-and-rollback,security-notes}.md,
   grav/user/themes/gites-theme/templates/gite-item.html.twig, grav/user/plugins/contact/contact.php,
-  tests/test-update-rollback.sh
-Dernière vérification : 2026-09-14
+  tests/{test-update-rollback,test-contact-routing}.sh
+Dernière vérification : 2026-09-15
 ```

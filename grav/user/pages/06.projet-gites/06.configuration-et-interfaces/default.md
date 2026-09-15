@@ -41,9 +41,12 @@ mailer: { engine: smtp }
 content_type: text/html
 ```
 
-`to` sert de **fallback** dans `resolveProprietaireEmail()` — utilisé
-concrètement quand la route `gite` soumise ne résout à aucun propriétaire
-valide (vérifié en direct, voir [Référence](../11.reference)).
+`to` alimente l'option explicite **« Demande générale »** du formulaire
+(identifiant réservé `general`), disponible uniquement si cette adresse
+est elle-même syntaxiquement valide — corrigé dans `v1.1.0` : ce n'est
+plus un repli silencieux automatique quand une valeur soumise est
+invalide, mais un choix métier visible parmi les options, voir
+[Référence](../11.reference).
 
 ## `grav/user/config/gites-photos-taxonomie.yaml`
 
@@ -92,19 +95,21 @@ comportement dépend des en-têtes de page (`proprietaire`,
 Ce dépôt ne définit aucune de ces variables lui-même — il les consomme
 telles que fournies par l'environnement d'exécution.
 
-## Interface Twig exposée : `proprietaire_email()` et `disponibilites_periodes()`
+## Interface Twig exposée : `proprietaire_email()`, `contact_gite_label()` et `disponibilites_periodes()`
 
 | Fonction | Signature | Enregistrement | Comportement |
 |---|---|---|---|
-| `proprietaire_email` | `(?string $giteRoute): ?string` | `contact.php::onTwigInitialized()` | résout un compte Grav depuis une route de page — voir [Référence](../11.reference) pour l'audit complet du routage |
+| `proprietaire_email` | `(?string $giteId): ?string` | `contact.php::onTwigInitialized()` | résout une adresse depuis la table serveur unique (`contactTable()`), par identifiant public — jamais par une route ou une donnée transmise directement par le client ; corrigé dans `v1.1.0`, voir [Référence](../11.reference) |
+| `contact_gite_label` | `(?string $giteId): ?string` | `contact.php::onTwigInitialized()` | **nouveau dans `v1.1.0`** — titre public du gîte sélectionné, pour l'affichage dans le courriel envoyé au propriétaire ; jamais utilisé pour la résolution du destinataire |
 | `disponibilites_periodes` | `(page) => array` | `calendrier-disponibilites.php::onTwigInitialized()` | délègue à `Availability::getUnavailablePeriods($page)`, lecture seule |
 
 ---
 
 ```yaml
 Source documentée : https://github.com/sepp67/projet-gites
-Référence : commit b27d7afa0c86461e94ab8c9ec53c557edb0afd0e
+Référence : tag v1.1.0 (commit 7309bd1968c1f9a4ede93098d624cea46243aa0b)
 Fichiers principaux : grav/user/config/{system,site}.yaml, grav/user/config/plugins/*.yaml,
-  grav/user/config/gites-photos-taxonomie.yaml, docs/secrets-and-config.md
-Dernière vérification : 2026-09-14
+  grav/user/config/gites-photos-taxonomie.yaml, grav/user/plugins/contact/contact.yaml,
+  docs/secrets-and-config.md
+Dernière vérification : 2026-09-15
 ```

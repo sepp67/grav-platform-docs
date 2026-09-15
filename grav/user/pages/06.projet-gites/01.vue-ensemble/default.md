@@ -58,9 +58,9 @@ couvre que les traits distinctifs les plus visibles :
 | Thème | `gites-theme`, **hérite** de `quark2` via chaînage `streams` | `lavallee-theme`, **entièrement autonome** | spécifique aux deux |
 | Langues | **monolingue** (français uniquement, aucun dossier `languages/`) | trilingue (FR/DE/EN) | spécifique aux deux |
 | Plugins métier | `contact` **+** `calendrier-disponibilites` (avec auto-administration côté propriétaire) | `contact` seul | spécifique à `projet-gites` |
-| Résolution du destinataire du formulaire | route du gîte fournie par un **champ caché rempli par le visiteur** (`form.value('gite')`), sans valeur par défaut | route fixe par défaut (`/contact`) | mécanisme partagé, usage différent — voir [Référence](../11.reference) |
-| Tests | 6 scripts, dont `test-secrets.sh` (4 scénarios) et `test-update-rollback.sh` | 4 scripts, aucun test de secrets dédié | `projet-gites` plus complet |
-| Documentation interne | 6 fichiers `docs/*.md` détaillés (contrat runtime, politique de compatibilité, cycle de vie du seed, secrets, tests, release/rollback) | 1 fichier (`docs/architecture.md`) | `projet-gites` plus complet |
+| Résolution du destinataire du formulaire | sélection **visible et obligatoire** parmi une liste fermée construite côté serveur, résolue exclusivement depuis cette même table serveur (corrigé dans `v1.1.0` — historiquement un champ caché prérempli, non revalidé à la soumission, voir [Référence](../11.reference)) | route fixe par défaut (`/contact`) | mécanisme partagé, usage différent — voir [Référence](../11.reference) |
+| Tests | 8 scripts, dont `test-secrets.sh` (4 scénarios), `test-update-rollback.sh`, et `test-contact-routing.sh` (60 assertions nommées de routage/sécurité, corrigé et étendu dans `v1.1.0`) | 4 scripts, aucun test de secrets ni de routage dédié | `projet-gites` plus complet |
+| Documentation interne | 7 fichiers `docs/*.md` détaillés (contrat runtime, politique de compatibilité, cycle de vie du seed, secrets, tests, release/rollback, notes de sécurité) | 1 fichier (`docs/architecture.md`) | `projet-gites` plus complet |
 
 ## Fiche synthétique
 
@@ -88,22 +88,26 @@ comprendre le mécanisme de réservation en ligne — **il n'en existe pas** :
 la mise en relation reste manuelle, par e-mail ou téléphone (voir la page
 de confirmation du formulaire).
 
-## État de ce dépôt au commit audité
+## État de ce dépôt au tag audité
 
 Deux gîtes sont définis : l'un (« Chalet Wisches ») porte un contenu
 éditorial complet et déjà rédigé ; le second (« Maison Taintrux ») est
 **explicitement marqué comme contenu temporaire** dans sa propre page
 (« à remplacer par les données réelles »), avec des valeurs numériques
-non renseignées (capacité et nombre de chambres à `0`). La documentation
-interne du dépôt certifie sa compatibilité avec `grav-runtime 1.0.2` alors
-que le `Dockerfile` référence `1.0.4` — voir [Référence](../11.reference)
-pour le détail complet de cet écart et des autres constats.
+non renseignées (capacité et nombre de chambres à `0`) — inchangé par la
+correction SEC-GITES-001, qui ne touche pas ce contenu éditorial. La
+documentation interne du dépôt certifie désormais sa compatibilité avec
+`grav-runtime 1.0.4` (version réellement construite par le `Dockerfile`,
+et réellement exercée par la suite de tests de ce même chantier) — voir
+[Référence](../11.reference) pour le détail complet de la correction et
+des constats résiduels.
 
 ---
 
 ```yaml
 Source documentée : https://github.com/sepp67/projet-gites
-Référence : commit b27d7afa0c86461e94ab8c9ec53c557edb0afd0e
-Fichiers principaux : README.md, Dockerfile, docs/architecture.md, docs/compatibility-policy.md
-Dernière vérification : 2026-09-14
+Référence : tag v1.1.0 (commit 7309bd1968c1f9a4ede93098d624cea46243aa0b)
+Fichiers principaux : README.md, Dockerfile, docs/architecture.md, docs/compatibility-policy.md,
+  docs/security-notes.md
+Dernière vérification : 2026-09-15
 ```

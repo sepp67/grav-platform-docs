@@ -186,11 +186,18 @@ travail futur :
 
 **Aucune migration de contenu sensible n'a encore été effectuée** — cette
 section documente une intention et des contraintes, pas un mécanisme
-existant. Cette migration n'est pas planifiée avant, dans l'ordre : (1) la
-fin de la construction du site documentaire lui-même ; (2) la correction
-du constat identifié dans `projet-gites` (référence : rapport de sécurité
-privé associé, hors de ce dépôt) ; (3) un nouvel audit du dépôt une fois
-corrigé.
+existant. Les trois conditions initialement posées avant d'envisager cette
+migration sont désormais réunies : (1) construction du site documentaire
+lui-même — **faite** (Lot 8) ; (2) correction du constat identifié dans
+`projet-gites` (référence : rapport de sécurité privé associé, hors de ce
+dépôt) — **faite**, publiée dans le tag `v1.1.0` (voir la rubrique
+`projet-gites`, page « Référence ») ; (3) un nouvel audit du dépôt une
+fois corrigé — **fait**, favorable (audit final au tag publié, Lot 9). La
+migration elle-même **n'a pas commencé** : cette section reste une
+intention et des contraintes à respecter le jour où elle sera engagée,
+pas un mécanisme construit par ce lot ni par aucun lot antérieur —
+conformément à la consigne de ne jamais créer ici de page authentifiée ou
+prétendument privée avant que ce mécanisme soit explicitement conçu.
 
 ## Dettes d'accessibilité connues (Lot 8)
 

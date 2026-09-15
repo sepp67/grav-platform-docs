@@ -65,18 +65,17 @@ runtime / image applicative / rôle — `ansible-role-grav-site` déploie
 `projet-gites` exactement comme il déploie `projet-lavallee-website` ou
 `grav-platform-docs`, sans connaître leur contenu métier respectif.
 
-Détail complet de ce dépôt, y compris un constat de sécurité confirmé sur
-le routage du formulaire de contact (référence **SEC-GITES-001**, non
-corrigé au commit documenté) : [rubrique
-`projet-gites`](../../06.projet-gites).
+Détail complet de ce dépôt, y compris un constat de sécurité (référence
+**SEC-GITES-001**) confirmé au commit `b27d7af` puis **corrigé et publié
+dans le tag `v1.1.0`** : [rubrique `projet-gites`](../../06.projet-gites).
 
 ---
 
 ```yaml
 Sources documentées : grav-runtime (v1.0.4, e6e35c37bce2d214b4fb2ca77549f7bec7eed3d4) — Dockerfile ;
                        projet-lavallee-website (main, c4341ca77270565969e1e801e11a8fda72e5b402) — Dockerfile ;
-                       projet-gites (main, b27d7afa0c86461e94ab8c9ec53c557edb0afd0e) — README.md, grav/user/themes/gites-theme/templates/ ;
+                       projet-gites (v1.1.0, 7309bd1968c1f9a4ede93098d624cea46243aa0b) — README.md, grav/user/themes/gites-theme/templates/ ;
                        ansible-role-grav-site (v2.0.0, 1339e50bc20257fbb9f21953995c08262ae3043e),
                        grav-sites-ops (v1.0.0, 48b9a59b956f73f10e5602b72a222dd71b4a3f3a) — voir docs/documentation-sources.yml
-Dernière vérification : 2026-09-14 (Lot 8 — liens croisés ajoutés, note obsolète retirée)
+Dernière vérification : 2026-09-15 (Lot 9 — projet-gites actualisé au tag publié v1.1.0, SEC-GITES-001 corrigé)
 ```

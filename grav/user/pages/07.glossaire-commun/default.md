@@ -30,7 +30,7 @@ rencontré n'importe où sur ce site.
 |---|---|---|
 | « Digest » | `ansible-role-grav-site` v2.0.0 : `grav_digest`, un champ optionnel qui épingle une image par somme de contrôle SHA-256, en plus du tag | **n'existe pas** dans `ansible-role-grav-site` v1.0.1 (vérifié directement, Lot 7) — un exemple écrit contre cette version antérieure ne le mentionne jamais, sans que ce soit une erreur |
 | « Contrat » | `ansible-role-grav-site` cite un « contrat v1.0.1 » comme texte normatif à plusieurs endroits de son propre code (commentaires `assert.yml`) | ce texte normatif lui-même n'a pas été lu par `grav-platform-docs` — seules ses conséquences observables dans le code ont été vérifiées |
-| « Rôle » (formulaire de contact) | `projet-lavallee-website` : route fixe par défaut (`/contact`), un seul propriétaire possible | `projet-gites` : route transmise par un champ cependant qualifié de « caché », plusieurs propriétaires possibles selon le gîte — voir le constat de sécurité SEC-GITES-001 documenté dans la rubrique `projet-gites` |
+| « Rôle » (formulaire de contact) | `projet-lavallee-website` : route fixe par défaut (`/contact`), un seul propriétaire possible | `projet-gites` : sélection visible et obligatoire parmi une liste fermée construite côté serveur, plusieurs propriétaires possibles selon le gîte choisi — mécanisme corrigé dans le tag `v1.1.0` (historiquement un champ qualifié de « caché », non revalidé à la soumission : constat de sécurité SEC-GITES-001, voir la rubrique `projet-gites`) |
 | « Glossaire » | Chaque rubrique de dépôt porte son propre « Glossaire local » (page Référence), spécifique à son vocabulaire de code | cette page-ci, seule à porter le nom « Glossaire commun », ne documente que les recoupements entre dépôts |
 
 ## Comment lire ce glossaire
@@ -45,5 +45,5 @@ code.
 
 ```yaml
 Sources documentées : les onze pages « Référence » des cinq dépôts déjà audités — voir docs/documentation-sources.yml
-Dernière vérification : 2026-09-14
+Dernière vérification : 2026-09-15 (Lot 9 — ligne SEC-GITES-001 actualisée : corrigé, tag v1.1.0)
 ```
