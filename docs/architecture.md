@@ -90,7 +90,7 @@ mécanisme déjà éprouvé plutôt que de le redécouvrir.
 | Fichier du thème enfant | Statut | Raison |
 |---|---|---|
 | `platform-docs-theme.yaml` | nouveau | déclare le chaînage de flux vers Learn2 et la métadonnée du thème |
-| `templates/partials/base.html.twig` | **copie modifiée** de Learn2 | seul moyen d'altérer le bloc `topbar` du gabarit commun (Twig ne permet pas d'étendre par bloc un template chargé via `{% embed %}` à travers deux thèmes empilés) ; tout le reste du fichier est identique à l'original — voir le commentaire en tête de fichier |
+| `templates/partials/base.html.twig` | **copie modifiée** de Learn2 | seul moyen d'altérer le bloc `topbar` du gabarit commun (Twig ne permet pas d'étendre par bloc un template chargé via `{% embed %}` à travers deux thèmes empilés) ; trois déviations documentées dans le commentaire en tête de fichier — le bloc `topbar`, et depuis le Lot 10 la balise `<meta name="viewport">` (retrait de `maximum-scale=1, user-scalable=no`, qui désactivait le zoom navigateur) et `aria-label="Accueil"` sur le lien `#logo` (aucun nom accessible dans l'original) — deux violations WCAG constatées par axe-core (`meta-viewport`, `link-name`) ; tout le reste du fichier est identique à l'original |
 | `templates/partials/header-links.html.twig` | nouveau | porte les deux liens globaux du header (§9 du cahier), sans détourner `github_link.html.twig` de Learn2 (conçu pour éditer la page courante sur GitHub, pas pour un lien global) |
 | `templates/contact.html.twig` | nouveau | gabarit du formulaire de contact, absent de Learn2 |
 | `templates/forms/contact-email.html.twig` | nouveau | gabarit de l'e-mail envoyé, absent de Learn2 |
@@ -199,21 +199,78 @@ pas un mécanisme construit par ce lot ni par aucun lot antérieur —
 conformément à la consigne de ne jamais créer ici de page authentifiée ou
 prétendument privée avant que ce mécanisme soit explicitement conçu.
 
-## Dettes d'accessibilité connues (Lot 8)
+## Dettes d'accessibilité connues (Lot 8, mesurées au Lot 10)
 
 VISUAL-001 a couvert le rendu visuel (absence de débordement horizontal,
 lisibilité desktop/mobile, formulaire, confirmation) et corrigé un bug
 réel (titre H1 de l'accueil débordant sur mobile étroit,
-`overflow-wrap: break-word` ajouté à `custom.css`). Trois vérifications
-d'accessibilité restent **ouvertes**, identifiées sous des identifiants
-stables pour un suivi ultérieur :
+`overflow-wrap: break-word` ajouté à `custom.css`). Le Lot 10 a mesuré
+réellement (Playwright + axe-core 4.10, contraste calculé depuis les
+styles réellement appliqués) les trois vérifications laissées ouvertes au
+Lot 8, corrigé ce qui pouvait l'être **minimalement** dans ce dépôt, et
+identifié deux dettes supplémentaires trouvées à cette occasion :
 
-- **A11Y-001** — contraste des couleurs non mesuré par un outil dédié
-  (inspection visuelle seule pendant le Lot 8).
-- **A11Y-002** — parcours au clavier et visibilité du focus non vérifiés.
-- **A11Y-003** — zoom à 200 % et reflow associé non vérifiés en
-  profondeur (au-delà de la largeur mobile réduite déjà testée).
+- **A11Y-001 — contraste : mesuré, partiellement conforme, reste ouvert.**
+  Conforme (≥ 4.5:1) : texte principal et labels de formulaire (7.46:1),
+  code inline (7.16:1), message d'erreur (7.46:1), liens de la barre
+  latérale (5.32:1). **Non conforme** : liens de contenu (3.43:1), liens
+  du bandeau supérieur (3.17:1), texte du bouton d'envoi (3.43:1), lien de
+  crédit « Grav » du pied de page Learn2 (1.32:1, sans soulignement — le
+  plus sévère, confirmé par `axe-core` sur les trois pages testées).
+  Seuil retenu : WCAG 2 AA, 4.5:1 texte normal. Correction non appliquée
+  dans ce lot : les couleurs concernées appartiennent aux fichiers CSS
+  compilés de Learn2 (`css-compiled/theme.css`), jamais copiés dans ce
+  dépôt — une correction demanderait d'y ajouter de nouvelles règles de
+  surcharge dans `custom.css` (point d'extension déjà existant), non
+  entreprise ici faute d'une palette de remplacement validée.
+- **A11Y-002 — clavier : mesuré partiellement, aucun défaut trouvé sur le
+  périmètre testé.** Séquence de tabulation vérifiée sur la page d'accueil
+  (logo, recherche, six premiers liens de navigation) : focus visible sur
+  chaque élément, aucun piège clavier observé, ordre logique. Périmètre
+  **non exhaustif** : menu mobile, sommaire complet, formulaire de contact
+  champ par champ et bouton d'envoi non parcourus un à un au clavier dans
+  ce lot.
+- **A11Y-003 — zoom à 200 % : blocage critique corrigé, reflow vérifié
+  partiellement.** `axe-core` avait détecté `meta-viewport` (impact
+  *critical*, WCAG 1.4.4/1.4.10) : `maximum-scale=1, user-scalable=no`
+  désactivait entièrement le zoom navigateur — **retiré** de
+  `templates/partials/base.html.twig` (copie déjà modifiée de Learn2, voir
+  ci-dessus). Reflow revérifié sans débordement horizontal supplémentaire
+  sur 3 pages représentatives (accueil, une page à tableaux, le
+  formulaire) via une approximation de contenu à largeur réduite — pas un
+  vrai zoom navigateur à 200 %, et pas les 12 types de page prévus par une
+  recette visuelle complète.
+- **A11Y-004 (nouveau, Lot 10) — labels du formulaire de contact : ouvert,
+  non corrigé.** `axe-core` (`label`, impact *critical*, 4 champs) :
+  aucun des champs (nom, e-mail, téléphone, message) n'a d'association
+  label/champ programmatique (`for`/`id`, `aria-label` ou
+  `aria-labelledby`) — le label est visuellement adjacent mais pas
+  techniquement lié. Origine : gabarit de champ **vendorisé** du plugin
+  Form de Grav (`user/plugins/form/templates/forms/...`), jamais copié
+  dans ce dépôt. Correction non appliquée : demanderait une nouvelle
+  surcharge de thème (gabarit de champ), un changement plus large qu'une
+  correction ponctuelle et non vérifié pour ses effets sur d'autres
+  formulaires du site (Admin, recherche) dans le temps disponible à ce
+  lot.
+- **A11Y-005 (nouveau, Lot 10) — liens icône seule « page précédente/
+  suivante » : ouvert, non corrigé.** `axe-core` (`link-name`, impact
+  *serious*, pages avec navigation séquentielle) : les flèches `<` / `>`
+  de Learn2 n'ont aucun texte accessible. Origine :
+  `user/themes/learn2/templates/docs.html.twig`, jamais copié dans ce
+  dépôt (contrairement à `base.html.twig`) — une correction demanderait
+  d'introduire une **nouvelle** surcharge de thème, non entreprise dans ce
+  lot.
 
-Ces trois dettes **doivent être fermées avant toute release publique**,
+**Corrigé au Lot 10** (mesuré, vérifié après correction, hors numérotation
+A11Y puisque fermé dans le même lot que sa découverte) : langue du document
+(`<html lang>` rendait `en` alors que tout le contenu est en français —
+ajout de `default_lang: fr` à `grav/user/config/site.yaml`, WCAG 3.1.1) ;
+lien `#logo` sans nom accessible (`axe-core` `link-name` — ajout de
+`aria-label="Accueil"`, WCAG 2.4.4/4.1.2).
+
+A11Y-001 à A11Y-005 **doivent être fermées avant toute release publique**,
 mais ne bloquent pas la construction ni la consultation locale de ce site
-documentaire.
+documentaire. Aucun outil `axe-core` n'a été exécuté avant le Lot 10 :
+l'absence d'erreur signalée par un outil automatisé ne constitue, dans tous
+les cas, jamais une certification WCAG complète — seuls les éléments et
+pages effectivement testés (listés ci-dessus) sont couverts.

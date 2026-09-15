@@ -1,4 +1,14 @@
 title: 'Documentation — Plateforme Grav'
+# Défaut Grav Core (system/config/site.yaml) : "en" — jamais personnalisé
+# jusqu'ici. Le contenu de ce site est entièrement en français (aucune page
+# /en ou /de, cahier §11) ; sans cette clé, `<html lang="…">` rendait "en"
+# dans les trois thèmes (Learn2, quark2, platform-docs-theme, tous lisant
+# grav.config.site.default_lang en repli quand aucune langue active n'est
+# définie — vérifié dans templates/partials/base.html.twig des trois).
+# Ne touche jamais à `languages.supported`, dont l'activation déclenche une
+# redirection "/" -> "/fr" constatée empiriquement et délibérément évitée
+# (voir system.yaml) : ce correctif est sans rapport avec ce mécanisme.
+default_lang: fr
 author:
   name: Sébastien Lavallée
   email: 'contact@example.invalid'
