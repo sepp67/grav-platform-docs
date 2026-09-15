@@ -9,19 +9,23 @@ form:
     nom:
       type: text
       label: Nom
+      id: contact-nom
       validate:
         required: true
     email:
       type: email
       label: E-mail
+      id: contact-email
       validate:
         required: true
     telephone:
       type: text
       label: Téléphone
+      id: contact-telephone
     message:
       type: textarea
       label: Message
+      id: contact-message
       validate:
         required: true
     honeypot:

@@ -23,3 +23,6 @@ tests/**/*.actual
 .idea/
 .DS_Store
 doc/
+CLAUDE.md
+docs/
+doc/

@@ -12,11 +12,12 @@ MAILPIT_API_PORT="18025"
 COOKIEJAR="$(mktemp)"
 BODY_FILE="$(mktemp)"
 HEADERS_FILE="$(mktemp)"
+RESPONSE_BODY_FILE="$(mktemp)"
 
 cleanup() {
   docker rm -f "$CONTAINER" "$MAILPIT" >/dev/null 2>&1 || true
   docker network rm "$NETWORK" >/dev/null 2>&1 || true
-  rm -f "$COOKIEJAR" "$BODY_FILE" "$HEADERS_FILE"
+  rm -f "$COOKIEJAR" "$BODY_FILE" "$HEADERS_FILE" "$RESPONSE_BODY_FILE"
 }
 trap cleanup EXIT
 cleanup
@@ -56,7 +57,7 @@ $(grep -oE '<input[^>]*type="hidden"[^>]*>' "$BODY_FILE" | \
     sed -E 's/.*name="([^"]*)".*value="([^"]*)".*/\1=\2/')
 EOF
 
-  curl -s -D "$HEADERS_FILE" -o /dev/null -b "$COOKIEJAR" -c "$COOKIEJAR" \
+  curl -s -D "$HEADERS_FILE" -o "$RESPONSE_BODY_FILE" -b "$COOKIEJAR" -c "$COOKIEJAR" \
     -X POST "http://localhost:$PORT/contact" \
     "$@" \
     --data-urlencode "data[nom]=${field_nom}" \
@@ -113,3 +114,51 @@ mailpit_count="$(curl -s "http://localhost:$MAILPIT_API_PORT/api/v1/messages" | 
 [ -n "$mailpit_count" ] && [ "$mailpit_count" -ge 1 ] \
   || fail "Mailpit n'a reçu aucun message pour la soumission valide"
 log "Mailpit a bien reçu $mailpit_count message(s)"
+
+# --- 4. Rejet applicatif CRLF (plugin contact, Lot 10.1 section E) ----------
+#
+# Rejet explicite, avant tout traitement, de CR/LF dans nom et email
+# (jamais dans message, où un saut de ligne est légitime) — voir
+# grav/user/plugins/contact/contact.php::onFormPrepareValidation(). Six cas
+# séparés (CR, LF, CRLF x nom, email). Pour chacun : pas de redirection vers
+# /contact/confirmation, message d'erreur générique, valeur fautive ni
+# journalisée nulle part dans la réponse HTTP, ni réaffichée dans le champ
+# concerné, et aucun message SMTP supplémentaire reçu par Mailpit.
+
+# Séquences CR/LF littérales, construites sans ambiguïté de quoting POSIX
+# (le $() d'un shell POSIX retire tout retour à la ligne final d'une
+# substitution : le caractère sentinelle "X" est placé APRÈS la séquence
+# voulue, pour que ce soit lui — et non le \n recherché — qui se retrouve
+# en dernière position et échappe à cette troncature, puis il est retiré).
+CR="$(printf '\rX')"; CR="${CR%X}"
+LF="$(printf '\nX')"; LF="${LF%X}"
+CRLF="$(printf '\r\nX')"; CRLF="${CRLF%X}"
+
+assert_crlf_rejected() {
+  case_label="$1"; field_nom="$2"; field_email="$3"; injected_value="$4"
+
+  submit_form "$field_nom" "$field_email" "Message de test sans CRLF." ""
+  loc="$(response_location)"
+  [ -z "$loc" ] || fail "$case_label : redirigée vers $loc (rejet CRLF non appliqué)"
+
+  grep -q "n'a pas pu être trait" "$RESPONSE_BODY_FILE" \
+    || fail "$case_label : message d'erreur générique absent de la réponse"
+
+  ! grep -qF "$injected_value" "$RESPONSE_BODY_FILE" \
+    || fail "$case_label : la valeur fautive est réaffichée dans la réponse"
+
+  log "$case_label : rejetée, message générique, valeur fautive non réaffichée"
+}
+
+assert_crlf_rejected "CR dans nom"     "Jean${CR}Dupont"   "valide-crlf@example.invalid" "Jean${CR}Dupont"
+assert_crlf_rejected "LF dans nom"     "Jean${LF}Dupont"   "valide-crlf@example.invalid" "Jean${LF}Dupont"
+assert_crlf_rejected "CRLF dans nom"   "Jean${CRLF}Dupont" "valide-crlf@example.invalid" "Jean${CRLF}Dupont"
+assert_crlf_rejected "CR dans email"   "Test CRLF" "valide-crlf@example.invalid${CR}Bcc:evil@example.invalid"   "Bcc:evil@example.invalid"
+assert_crlf_rejected "LF dans email"   "Test CRLF" "valide-crlf@example.invalid${LF}Bcc:evil@example.invalid"   "Bcc:evil@example.invalid"
+assert_crlf_rejected "CRLF dans email" "Test CRLF" "valide-crlf@example.invalid${CRLF}Bcc:evil@example.invalid" "Bcc:evil@example.invalid"
+
+sleep 1
+mailpit_count_after_crlf="$(curl -s "http://localhost:$MAILPIT_API_PORT/api/v1/messages" | grep -o '"total":[0-9]*' | head -1 | cut -d: -f2)"
+[ "$mailpit_count_after_crlf" = "$mailpit_count" ] \
+  || fail "les 6 soumissions CRLF ont fait varier le nombre de messages Mailpit ($mailpit_count -> $mailpit_count_after_crlf) : un envoi a eu lieu"
+log "les 6 rejets CRLF n'ont déclenché aucun envoi SMTP (Mailpit toujours à $mailpit_count_after_crlf message(s))"

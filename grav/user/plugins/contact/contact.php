@@ -21,8 +21,37 @@ class ContactPlugin extends Plugin
 
         $this->enable([
             'onTwigInitialized' => ['onTwigInitialized', 0],
+            'onFormPrepareValidation' => ['onFormPrepareValidation', 0],
             'onFormValidationProcessed' => ['onFormValidationProcessed', 0],
         ]);
+    }
+
+    /**
+     * Rejet CRLF explicite du plugin contact (Lot 10.1, section E).
+     *
+     * Volontairement câblé sur onFormPrepareValidation — le seul événement
+     * de Form qui s'exécute avant $this->data->validate()/filter() (voir
+     * classes/Form.php) — et non sur onFormValidationProcessed : le champ
+     * "nom" (type: text, non multiline) fait déjà l'objet d'une règle
+     * intégrée à Grav (Validation::typeText, `\R` sur texte non multiligne)
+     * qui rejetterait un CR/LF de toute façon, mais seulement une fois
+     * validate() déjà passé — trop tard pour empêcher le réaffichage de la
+     * valeur fautive dans le formulaire (comportement standard de Form
+     * après un échec de validation). En interceptant plus tôt, ce rejet
+     * s'applique identiquement aux deux champs, y compris "email" — que
+     * Grav ne rejette pas de lui-même : typeEmail retire les espaces
+     * (dont \r\n) avant validation, donc laisse passer silencieusement une
+     * valeur CRLF nettoyée plutôt que de la rejeter.
+     */
+    public function onFormPrepareValidation(Event $event): void
+    {
+        $form = $event['form'];
+        if ($form->getName() !== 'contact-form') {
+            return;
+        }
+
+        $this->rejectCrlf($form, 'nom');
+        $this->rejectCrlf($form, 'email');
     }
 
     public function onFormValidationProcessed(Event $event): void
@@ -33,6 +62,34 @@ class ContactPlugin extends Plugin
         }
 
         if ($form->value('honeypot')) {
+            throw new ValidationException('Votre demande n\'a pas pu être traitée.');
+        }
+    }
+
+    /**
+     * Rejette explicitement, avant tout traitement, une valeur de champ
+     * contenant un retour chariot (CR) ou un saut de ligne (LF).
+     * Volontairement limité à nom/email — jamais message, où un saut de
+     * ligne est un usage légitime : ce sont nom et email qui peuvent se
+     * retrouver recopiés dans des en-têtes SMTP (From, Reply-To, sujet),
+     * là où une injection CR/LF permettrait d'ajouter des en-têtes
+     * arbitraires (Bcc, Cc, etc.). Complémentaire, jamais redondant, avec :
+     * la validation générique du formulaire (Grav Form, sur required/type,
+     * toujours active en aval pour tout ce que ce contrôle ne couvre pas) ;
+     * l'échappement du corps du message par Twig
+     * (forms/contact-email.html.twig) ; la protection propre à PHPMailer en
+     * aval. Message volontairement générique : la valeur fautive n'est ni
+     * journalisée, ni transmise à un envoi d'e-mail (l'exception interrompt
+     * le traitement du formulaire avant l'étape email), ni réaffichée — le
+     * champ est vidé dans les données du formulaire avant de lever
+     * l'exception, pour que le template de réaffichage ne la reproduise
+     * pas.
+     */
+    private function rejectCrlf(mixed $form, string $field): void
+    {
+        $value = $form->value($field);
+        if (is_string($value) && preg_match('/[\r\n]/', $value) === 1) {
+            $form->setData($field, '');
             throw new ValidationException('Votre demande n\'a pas pu être traitée.');
         }
     }

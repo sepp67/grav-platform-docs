@@ -60,3 +60,167 @@
 h1, h2, h3, h4, h5, h6 {
     overflow-wrap: break-word;
 }
+
+/* Lot 10.1 — contrastes mesurés (axe-core + calcul depuis les styles
+   réellement appliqués, voir docs/architecture.md). #0e6185 : déjà présent
+   dans la palette compilée de Learn2 (css-compiled/theme.css), jamais
+   utilisé comme couleur de lien ou de bouton dans ce thème — réutilisé ici
+   plutôt qu'une couleur nouvelle, pour rester visuellement cohérent avec
+   la palette déjà en place. Ratios mesurés après application (WCAG AA,
+   seuil 4.5:1 texte normal) :
+   - liens de contenu (#body-inner a) sur fond blanc : 6.85:1 ;
+   - liens du bandeau (#header-links a) sur fond #f6f6f6 : 6.34:1 ;
+   - texte du bouton d'envoi (blanc) sur ce fond de bouton : 6.85:1.
+   États hover et focus vérifiés séparément : le focus des liens/boutons
+   provient déjà d'un indicateur non-couleur (contour/ombre, voir plus haut
+   dans ce fichier et templates/contact.html.twig hérité de Learn2), non
+   affecté par ce changement de couleur ; un hover plus foncé est ajouté
+   ci-dessous pour conserver un retour visuel au survol, lui aussi mesuré
+   au-dessus du seuil. */
+#body-inner a,
+#header-links a {
+    color: #0e6185;
+}
+
+/* Distinction non liée à la seule couleur (WCAG 1.4.1) : un lien de
+   contenu au sein d'un paragraphe reste proche en luminance du texte
+   environnant (#555) même avec la couleur ci-dessus (mesuré : 1.08:1,
+   sous le seuil de 3:1 exigé pour un lien distingué uniquement par la
+   couleur) — un soulignement lève l'ambiguïté indépendamment de la
+   couleur choisie. Non appliqué aux liens du bandeau (#header-links),
+   qui ne sont pas insérés dans un bloc de texte. */
+#body-inner a {
+    text-decoration: underline;
+}
+
+#body-inner a:hover,
+#header-links a:hover {
+    color: #0a4c69;
+}
+
+.contact-page form button.button {
+    background-color: #0e6185;
+    border-color: #0e6185;
+}
+
+.contact-page form button.button:hover {
+    background-color: #0a4c69;
+    border-color: #0a4c69;
+}
+
+/* Pied de page Learn2 "Built with Grav - The Modern Flat File CMS"
+   (#footer p, system, jamais surchargé par ce thème) : deux défauts
+   distincts constatés par axe-core sur ce même paragraphe.
+   1) color-contrast : le texte entier du paragraphe (#a2a2a2 sur fond
+      #38424d) ne mesure que 4:1, sous le seuil de 4.5:1 (texte normal).
+      #b0b6bc conserve un gris proche de l'original tout en atteignant
+      5:1, mesuré après application.
+   2) link-in-text-block : le lien "Grav" à l'intérieur ne mesurait que
+      1.32:1 avec le texte environnant et ne portait aucune autre
+      distinction. Un soulignement lève l'ambiguïté indépendamment de la
+      couleur choisie ci-dessus. */
+#footer p {
+    color: #b0b6bc;
+}
+
+a[href="http://getgrav.org"] {
+    text-decoration: underline;
+}
+
+/* Lot 10.2 — A11Y-006, champ de recherche (#search-by, dans .searchbox).
+   Le texte indicatif (placeholder) est déclaré en blanc mais rendu par
+   Learn2 avec un canal alpha (`.searchbox input::-webkit-input-placeholder
+   { color: rgba(255,255,255,0.6) }`) : la couleur AFFICHÉE n'est donc pas
+   #ffffff, mais le mélange de ce blanc à 60 % d'opacité avec le fond réel
+   de .searchbox (#1383b3) — soit environ rgb(161,205,225), vérifié à la
+   fois par calcul et par échantillonnage direct des pixels d'une capture
+   d'écran (~rgb(161,206,225)). Contraste réel mesuré : ~2.56:1, très en
+   dessous du seuil, alors qu'axe-core rapportait 4.26:1 en ne tenant
+   compte que de la couleur déclarée (#ffffff) sans le canal alpha — un
+   écart qui aurait fait clore ce point à tort.
+   Cette même analyse montre qu'un texte blanc totalement opaque ne suffit
+   de toute façon PAS sur le fond actuel : le blanc pur (couleur la plus
+   claire possible) ne plafonne qu'à 4.26:1 sur #1383b3 (calcul), quel que
+   soit le texte choisi — la seule correction possible est donc
+   d'assombrir le fond de .searchbox, pas seulement la couleur du texte.
+   #0e6185 (déjà en usage dans ce fichier, voir plus haut) donne 6.85:1
+   avec du texte blanc opaque — réutilisé ici pour la même raison de
+   cohérence visuelle. Couvre à la fois le placeholder (texte indicatif,
+   champ vide) et le texte réellement saisi (déjà blanc opaque par
+   ailleurs, mais qui plafonnait au même 4.26:1 sur l'ancien fond) :
+   6.85:1 mesuré dans les deux cas, champ vide et rempli, desktop et
+   mobile (le composant ne change pas de style selon le viewport), état
+   focus inclus (:focus ne modifie que border-color/box-shadow, jamais le
+   fond de .searchbox). */
+.searchbox {
+    background: #0e6185;
+}
+
+.searchbox input::placeholder,
+.searchbox input::-webkit-input-placeholder {
+    color: #ffffff;
+    opacity: 1;
+}
+
+/* Lot 10.2 — A11Y-007, numéros du sommaire (#sidebar ul.topics > li > a b,
+   ex. "1. ", "2. "...). Cause identifiée précisément : Learn2 applique
+   `opacity: 0.5` directement sur ce <b> (pas une opacité héritée d'un
+   ancêtre, mais bien sur l'élément lui-même — voir
+   css-compiled/theme.css). C'est ce canal alpha qui produit le rendu
+   réel : le texte environnant ("Accueil", etc., non signalé par
+   axe-core) et le numéro partagent la même couleur déclarée, mais
+   seul le numéro est ensuite dilué à 50 % vers le fond réellement
+   affiché derrière lui.
+   Quatre rendus distincts selon Learn2 (couleur héritée dépend de l'état
+   du <li> parent, jamais du <b> lui-même) :
+   - normal (élément inactif, fond sombre hérité de #sidebar,
+     rgb(56,66,77)) : #bbbbbb ;
+   - hover : #d5d5d5, même fond ;
+   - li.parent (rubrique dépliée) : #bbbbbb sur fond #2d353e ;
+   - li.active (page couramment affichée) : fond blanc, #555.
+   axe-core n'avait signalé que deux valeurs (#aaaaaa/1. et #dddddd/2-8.)
+   parce qu'il mélange l'opacité avec un fond supposé blanc au lieu du
+   fond réellement affiché à cet endroit (sombre, ou #2d353e) — sous-
+   estimant la sévérité du défaut pour les items non actifs (~2.36:1
+   mesuré par échantillonnage de pixels, voir docs/architecture.md),
+   tout en signalant à raison un défaut bien réel.
+   Correction : `opacity: 1`, pour que le numéro ait exactement le même
+   rendu que le texte adjacent non signalé par axe-core — dans les
+   quatre cas ci-dessus, la couleur héritée seule (sans dilution)
+   atteint déjà largement 4.5:1 sur le fond réel (5.32:1 à 7.46:1 selon
+   l'état, calculé), donc aucune redéfinition de couleur par état n'est
+   nécessaire. L'état focus clavier ne change pas la couleur (Learn2 n'a
+   pas de règle `:focus` distincte ici) : couvert par le même calcul que
+   l'état normal. */
+#sidebar ul.topics > li > a b {
+    opacity: 1;
+}
+
+/* Lot 10.2 — A11Y-008, débordement horizontal global à 200 % de zoom.
+   Cause : un `<code>` inline (pas dans un `<pre>`) contenant une chaîne
+   sans point de coupure — hash de commit, nom de méthode qualifié
+   (`Blueprint::addAllowedDynamicCallable()`) — force la largeur de tout
+   le document plutôt que de déborder localement, `#body-inner code`
+   n'ayant par défaut aucune règle de coupure (Learn2 ne le prévoit pas :
+   seuls les tableaux et les <pre> sont bornés, voir plus haut dans ce
+   fichier, Lot 8). Ciblé uniquement sur le code *inline* : les blocs
+   `<pre><code>` sont explicitement exclus ci-dessous et gardent leur
+   propre défilement interne (`#body-inner pre { overflow-x: auto }`,
+   déjà en place) — y casser le texte détruirait la mise en forme
+   (indentation, alignement) que ce défilement est justement censé
+   préserver. `overflow-wrap: anywhere` autorise la coupure n'importe où
+   dans le mot si nécessaire (contrairement à `break-word`, elle
+   s'applique même à un mot qui, seul, tiendrait dans une ligne vide —
+   nécessaire pour un identifiant sans espace ni tiret, qui n'offre sinon
+   aucun point de coupure) : le SHA/nom de méthode se coupe au lieu de
+   pousser la page en largeur. Vérifié à 100 % et 200 % de zoom, largeurs
+   320/375/768/1440 px, sur une page profonde à tableau large et un bloc
+   de code : plus de débordement horizontal global, `#body-inner pre` et
+   `#body-inner table` continuent de défiler normalement en interne. */
+#body-inner code {
+    overflow-wrap: anywhere;
+}
+
+#body-inner pre code {
+    overflow-wrap: normal;
+}

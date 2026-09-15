@@ -94,12 +94,13 @@ mécanisme déjà éprouvé plutôt que de le redécouvrir.
 | `templates/partials/header-links.html.twig` | nouveau | porte les deux liens globaux du header (§9 du cahier), sans détourner `github_link.html.twig` de Learn2 (conçu pour éditer la page courante sur GitHub, pas pour un lien global) |
 | `templates/contact.html.twig` | nouveau | gabarit du formulaire de contact, absent de Learn2 |
 | `templates/forms/contact-email.html.twig` | nouveau | gabarit de l'e-mail envoyé, absent de Learn2 |
-| `css/custom.css` | nouveau, **point d'extension natif** | Learn2 référence déjà `theme://css/custom.css` dans son propre `base.html.twig` sans livrer ce fichier — c'est le point d'extension CSS prévu par le thème lui-même, pas une surcharge |
+| `templates/docs.html.twig` | **copie modifiée** de Learn2 (Lot 10.1) | même limite d'héritage Twig par bloc que `base.html.twig` ci-dessus ; une seule déviation, dans le bloc `navigation` — `aria-label` ajouté aux liens précédent/suivant, nommant explicitement la page ciblée (l'original ne leur donne aucun nom accessible, icône seule — violation WCAG 2.4.4/4.1.2 constatée par axe-core, `link-name`) ; présentation visuelle inchangée ; tout le reste du fichier est identique à l'original |
+| `css/custom.css` | nouveau, **point d'extension natif** | Learn2 référence déjà `theme://css/custom.css` dans son propre `base.html.twig` sans livrer ce fichier — c'est le point d'extension CSS prévu par le thème lui-même, pas une surcharge ; porte aussi, depuis le Lot 10.1, les correctifs de contraste (voir la section dédiée) |
 
-Aucun autre fichier de Learn2 (JS, polices, images, gabarits `docs.html.twig`
-/ `chapter.html.twig` / `default.html.twig` / `error.html.twig`, partials de
-recherche, breadcrumbs, etc.) n'est copié ni modifié : ils sont utilisés
-tels quels via le chaînage de flux.
+Aucun autre fichier de Learn2 (JS, polices, images, gabarits `chapter.html.twig`
+/ `default.html.twig` / `error.html.twig`, partials de recherche,
+breadcrumbs, etc.) n'est copié ni modifié : ils sont utilisés tels quels via
+le chaînage de flux.
 
 ### Header et identité visuelle (cahier §9)
 
@@ -199,7 +200,7 @@ pas un mécanisme construit par ce lot ni par aucun lot antérieur —
 conformément à la consigne de ne jamais créer ici de page authentifiée ou
 prétendument privée avant que ce mécanisme soit explicitement conçu.
 
-## Dettes d'accessibilité connues (Lot 8, mesurées au Lot 10)
+## Dettes d'accessibilité connues (Lot 8, mesurées au Lot 10, fermées ou complétées aux Lots 10.1/10.2, décisions humaines enregistrées au Lot 10.3)
 
 VISUAL-001 a couvert le rendu visuel (absence de débordement horizontal,
 lisibilité desktop/mobile, formulaire, confirmation) et corrigé un bug
@@ -208,58 +209,214 @@ réel (titre H1 de l'accueil débordant sur mobile étroit,
 réellement (Playwright + axe-core 4.10, contraste calculé depuis les
 styles réellement appliqués) les trois vérifications laissées ouvertes au
 Lot 8, corrigé ce qui pouvait l'être **minimalement** dans ce dépôt, et
-identifié deux dettes supplémentaires trouvées à cette occasion :
+identifié deux dettes supplémentaires (A11Y-004, A11Y-005). Le Lot 10.1 a
+fermé ce qui bloquait encore une release publique v1.0.0 et identifié
+trois nouvelles dettes (A11Y-006/007/008). Le Lot 10.2 a fermé ces trois
+dettes, complété la recette clavier, corrigé le vocabulaire employé pour
+le zoom, et identifié deux nouvelles dettes plus structurelles
+(A11Y-009, A11Y-010) ainsi qu'un constat clavier (A11Y-011). Le Lot 10.3
+n'a modifié aucun code : il enregistre la décision humaine issue d'un
+contrôle manuel réel au zoom navigateur (100 %/200 %), qui requalifie
+A11Y-009/010 et confirme/accepte explicitement A11Y-011 comme dette non
+bloquante pour v1.0.0 :
 
-- **A11Y-001 — contraste : mesuré, partiellement conforme, reste ouvert.**
-  Conforme (≥ 4.5:1) : texte principal et labels de formulaire (7.46:1),
-  code inline (7.16:1), message d'erreur (7.46:1), liens de la barre
-  latérale (5.32:1). **Non conforme** : liens de contenu (3.43:1), liens
-  du bandeau supérieur (3.17:1), texte du bouton d'envoi (3.43:1), lien de
-  crédit « Grav » du pied de page Learn2 (1.32:1, sans soulignement — le
-  plus sévère, confirmé par `axe-core` sur les trois pages testées).
-  Seuil retenu : WCAG 2 AA, 4.5:1 texte normal. Correction non appliquée
-  dans ce lot : les couleurs concernées appartiennent aux fichiers CSS
-  compilés de Learn2 (`css-compiled/theme.css`), jamais copiés dans ce
-  dépôt — une correction demanderait d'y ajouter de nouvelles règles de
-  surcharge dans `custom.css` (point d'extension déjà existant), non
-  entreprise ici faute d'une palette de remplacement validée.
-- **A11Y-002 — clavier : mesuré partiellement, aucun défaut trouvé sur le
-  périmètre testé.** Séquence de tabulation vérifiée sur la page d'accueil
-  (logo, recherche, six premiers liens de navigation) : focus visible sur
-  chaque élément, aucun piège clavier observé, ordre logique. Périmètre
-  **non exhaustif** : menu mobile, sommaire complet, formulaire de contact
-  champ par champ et bouton d'envoi non parcourus un à un au clavier dans
-  ce lot.
-- **A11Y-003 — zoom à 200 % : blocage critique corrigé, reflow vérifié
-  partiellement.** `axe-core` avait détecté `meta-viewport` (impact
-  *critical*, WCAG 1.4.4/1.4.10) : `maximum-scale=1, user-scalable=no`
-  désactivait entièrement le zoom navigateur — **retiré** de
-  `templates/partials/base.html.twig` (copie déjà modifiée de Learn2, voir
-  ci-dessus). Reflow revérifié sans débordement horizontal supplémentaire
-  sur 3 pages représentatives (accueil, une page à tableaux, le
-  formulaire) via une approximation de contenu à largeur réduite — pas un
-  vrai zoom navigateur à 200 %, et pas les 12 types de page prévus par une
-  recette visuelle complète.
-- **A11Y-004 (nouveau, Lot 10) — labels du formulaire de contact : ouvert,
-  non corrigé.** `axe-core` (`label`, impact *critical*, 4 champs) :
-  aucun des champs (nom, e-mail, téléphone, message) n'a d'association
-  label/champ programmatique (`for`/`id`, `aria-label` ou
-  `aria-labelledby`) — le label est visuellement adjacent mais pas
-  techniquement lié. Origine : gabarit de champ **vendorisé** du plugin
-  Form de Grav (`user/plugins/form/templates/forms/...`), jamais copié
-  dans ce dépôt. Correction non appliquée : demanderait une nouvelle
-  surcharge de thème (gabarit de champ), un changement plus large qu'une
-  correction ponctuelle et non vérifié pour ses effets sur d'autres
-  formulaires du site (Admin, recherche) dans le temps disponible à ce
-  lot.
-- **A11Y-005 (nouveau, Lot 10) — liens icône seule « page précédente/
-  suivante » : ouvert, non corrigé.** `axe-core` (`link-name`, impact
-  *serious*, pages avec navigation séquentielle) : les flèches `<` / `>`
-  de Learn2 n'ont aucun texte accessible. Origine :
-  `user/themes/learn2/templates/docs.html.twig`, jamais copié dans ce
-  dépôt (contrairement à `base.html.twig`) — une correction demanderait
-  d'introduire une **nouvelle** surcharge de thème, non entreprise dans ce
-  lot.
+- **A11Y-001 — contraste : les quatre éléments identifiés au Lot 10 sont
+  conformes, mesurés après correction (Lot 10.1).** Voir `custom.css`
+  pour le détail des ratios. `axe-core` ne rapporte plus aucune violation
+  `color-contrast` ni `link-in-text-block` sur ces quatre éléments.
+- **A11Y-002 — clavier : recette complétée au Lot 10.2, toujours non
+  garantie exhaustive à 100 %.** Parcours réellement exécuté (Playwright,
+  vraies pressions de touche `Tab`/`Shift+Tab`/`Enter`/`Escape`, jamais de
+  simulation de focus par script) : lien logo → champ de recherche →
+  sommaire (8 rubriques) → « Clear History » → crédit « Grav » → liens du
+  bandeau (`lavallee.tech`, GitHub) → bouton de sidebar mobile (là où il
+  est réellement rendu dans le DOM, voir A11Y-011) → liens
+  précédent/suivant (page docs) → formulaire complet
+  (nom → e-mail → téléphone → message → envoi). Sur les 19 arrêts de la
+  page d'accueil et les 19 de la page de contact : indicateur de focus
+  visible sur chacun, aucun piège clavier constaté (le focus atteint
+  normalement la fin de la séquence après le bouton d'envoi, sans boucler).
+  Bouton de sidebar mobile testé isolément (375 px) : `Enter` ouvre le
+  menu (classe `sidebar-hidden` ajoutée, `#sidebar` passe de `left:-230px`
+  à `left:0`), le focus reste sur le bouton ; un second `Enter` sur ce
+  même bouton referme le menu et le focus y reste — un aller-retour
+  ouverture/fermeture par la même touche sur le même contrôle fonctionne
+  correctement et restitue le focus au bon endroit. Voir A11Y-011 pour un
+  constat lié mais distinct (ordre de tabulation, pas activation).
+  **Non exhaustif** : sous-menus du sommaire dépliables/repliables au
+  clavier non testés un à un.
+- **A11Y-003 — zoom à 200 % : vocabulaire corrigé au Lot 10.2 ; vérifié
+  sur un périmètre de largeurs élargi.** Le Lot 10.1 avait qualifié à tort
+  `document.documentElement.style.zoom` de « zoom navigateur réel » — ce
+  n'est pas le cas : c'est un contrôle CSS complémentaire, qui déclenche
+  un vrai reflow de mise en page (contrairement à un `transform: scale`
+  ou à un simple viewport réduit) mais n'est pas le zoom natif du
+  navigateur (`Ctrl` + `+`, implémenté au niveau du chrome du navigateur,
+  pas de la page). Le Lot 10.2 a tenté d'automatiser un vrai zoom
+  navigateur dans cet environnement : ni l'envoi de l'accélérateur clavier
+  réel (`xdotool`, fenêtre Chromium non-headless authentiquement focalisée
+  sur un display X11 réel) ni `Emulation.setPageScaleFactor` (CDP — ne
+  produit qu'un zoom visuel de type pincement mobile, sans reflow, et sans
+  effet constaté ici) n'ont réussi à déclencher un vrai zoom navigateur
+  avec reflow, malgré plusieurs méthodes essayées.
+
+  **Décision humaine enregistrée (Lot 10.3) : contrôle manuel réel
+  effectué par l'utilisateur, zoom navigateur réel (`Ctrl` + `+`, pas le
+  contrôle CSS ci-dessus) à 100 % et à 200 %, hors de cette session
+  automatisée. Constat : aucun défaut bloquant observé pendant ce
+  contrôle réel.** Ce contrôle n'a pas été détaillé page par page dans ce
+  dépôt (pas de liste des pages couvertes, pas de capture) — il fait
+  foi comme vérification humaine du zoom navigateur réel demandé par
+  WCAG 1.4.4/1.4.10, mais avec un niveau de granularité moindre que le
+  reste de cette recette. Conséquence directe sur A11Y-009 et A11Y-010
+  (débordements trouvés uniquement via le contrôle CSS complémentaire,
+  à 320 px et 768 px) : **non reproduits lors de ce contrôle réel** —
+  requalifiés ci-dessous en observations issues du seul contrôle CSS
+  renforcé, pas en défauts confirmés au zoom navigateur réel.
+
+  Le contrôle CSS complémentaire (six pages : accueil, page profonde,
+  tableau large, bloc de code, glossaire, formulaire ; quatre largeurs :
+  320, 375, 768, 1440 px) reste documenté ci-dessous et dans
+  `docs/testing.md`, explicitement requalifié comme un **complément**,
+  jamais une preuve de zoom navigateur réel à lui seul : accueil,
+  glossaire, formulaire conformes (aucun débordement horizontal global) à
+  1440 px ; page profonde/tableau large et bloc de code, non conformes à
+  1440 px avant correction (voir A11Y-008, fermé), à nouveau conformes
+  après ; à 320 et 768 px, des débordements distincts subsistent au
+  contrôle CSS — voir A11Y-009 et A11Y-010, requalifiés.
+
+  **Aucune certification WCAG globale n'est revendiquée** pour le zoom :
+  ni le contrôle CSS complémentaire ni le contrôle manuel réel
+  (non détaillé page par page) ne couvrent l'ensemble des pages et
+  composants du site ; seuls les éléments et pages effectivement
+  contrôlés, listés ici, le sont.
+- **A11Y-004 — labels du formulaire de contact : fermé au Lot 10.1.**
+  Un `id:` explicite par champ dans le frontmatter de la page contact,
+  sans nouvelle surcharge de template. `axe-core` (`label`) : 0 violation.
+- **A11Y-005 — liens icône seule « page précédente/suivante » : fermé au
+  Lot 10.1.** Surcharge minimale `docs.html.twig`, `aria-label` explicite.
+  `axe-core` (`link-name`) : 0 violation.
+- **A11Y-006 — contraste du texte indicatif du champ de recherche : fermé
+  au Lot 10.2.** Cause identifiée précisément (pas seulement la couleur
+  déclarée) : `.searchbox input::-webkit-input-placeholder` est déclaré en
+  blanc mais avec un **canal alpha** (`rgba(255,255,255,0.6)`) — la
+  couleur réellement affichée est le mélange de ce blanc à 60 % avec le
+  fond de `.searchbox` (`#1383b3`), soit ≈ `rgb(161,205,225)`, vérifié à
+  la fois par calcul et par échantillonnage direct des pixels d'une
+  capture d'écran. Contraste réel mesuré ≈ 2.56:1 — très en dessous de ce
+  qu'`axe-core` avait rapporté (4.26:1, calculé sans tenir compte du canal
+  alpha). Plus significatif encore : même un blanc totalement opaque ne
+  suffit pas sur ce fond (plafond calculé de 4.26:1, quel que soit le
+  texte choisi, le blanc étant la couleur la plus claire possible) — seul
+  un assombrissement du fond de `.searchbox` pouvait suffire. Corrigé en
+  assombrissant `.searchbox` vers `#0e6185` (couleur déjà en usage
+  ailleurs dans ce fichier, pour la cohérence visuelle) et en rendant le
+  texte indicatif totalement opaque : **6.85:1 mesuré**, dans les deux cas
+  champ vide (texte indicatif) et rempli (texte saisi, qui plafonnait au
+  même défaut), en desktop et mobile (le composant ne change pas de style
+  selon le viewport), et à l'état focus (`:focus` ne modifie que la
+  bordure/l'ombre, jamais le fond de `.searchbox`). `axe-core` : 0
+  violation sur les trois pages testées.
+- **A11Y-007 — contraste des numéros du sommaire latéral : fermé au
+  Lot 10.2.** Cause identifiée précisément : Learn2 applique
+  `opacity: 0.5` **directement sur l'élément** `<b>` du numéro (pas une
+  opacité héritée d'un ancêtre) — `#sidebar ul.topics > li > a b`. C'est
+  ce canal alpha qui produit un rendu très inférieur à la couleur
+  déclarée seule : contraste réel mesuré ≈ 2.36:1 (échantillonnage de
+  pixels), contre les 1.35:1/2.32:1 rapportés par `axe-core` (qui mélange
+  correctement l'opacité mais avec un fond supposé blanc au lieu du fond
+  réellement affiché à cet endroit — sous-estimant la sévérité sans se
+  tromper sur l'existence du défaut). Quatre rendus distincts selon l'état
+  du `<li>` parent (jamais du `<b>` lui-même, qui n'a pas de couleur
+  propre) : normal (texte hérité `#bbbbbb`, fond sombre `#38424D`),
+  survol (`#d5d5d5`, même fond), rubrique dépliée/`li.parent`
+  (`#bbbbbb` sur `#2d353e`), page active/`li.active` (fond blanc, texte
+  `#555`). Corrigé par `opacity: 1` : le numéro reçoit exactement le même
+  rendu que le texte adjacent (non signalé par `axe-core`) dans chacun de
+  ces quatre états. Ratios mesurés après correction (Playwright,
+  `getComputedStyle` + calcul de luminance) : normal 5.32:1, survol
+  6.96:1, focus clavier 6.96:1 (Learn2 n'a pas de règle `:focus` propre
+  ici — le focus reprend la couleur de survol), rubrique dépliée 6.47:1,
+  page active 7.46:1. `axe-core` : 0 violation sur les trois pages
+  testées.
+- **A11Y-008 — débordement horizontal global à 200 % sur `<code>` inline
+  non sécable : fermé au Lot 10.2, pour son périmètre exact.** Cause :
+  `#body-inner code` n'avait par défaut aucune règle de coupure (seuls
+  `<pre>` et les tableaux sont bornés depuis le Lot 8) ; un hash de commit
+  ou un nom de méthode qualifié sans espace (ex.
+  `Blueprint::addAllowedDynamicCallable()`) forçait la largeur de tout le
+  document. Corrigé par `#body-inner code { overflow-wrap: anywhere }`,
+  **explicitement exclu pour le code à l'intérieur d'un `<pre>`**
+  (`#body-inner pre code { overflow-wrap: normal }`, règle plus
+  spécifique) — un bloc de code déjà scrollable horizontalement
+  (`#body-inner pre { overflow-x: auto }`, Lot 8) n'a pas besoin d'être
+  cassé au milieu d'un mot, ce qui en détruirait la mise en forme (voir
+  l'en-tête de `custom.css` pour le raisonnement complet). Vérifié à
+  1440 px et 375 px, aux deux niveaux de zoom (100 % et 200 %, contrôle
+  CSS voir A11Y-003) sur la page profonde/tableau large et le bloc de
+  code : plus aucun débordement horizontal global (0 px, contre 19 px et
+  125 px avant correction), `#body-inner pre` et `#body-inner table`
+  continuent de défiler normalement en interne. **Non conforme à 320 px
+  et 768 px** — mais pour une cause différente et non liée au code inline
+  (voir A11Y-009, A11Y-010) : ce point precis (code inline) est fermé,
+  la conformité globale au zoom 200 % sur toutes les largeurs ne l'est
+  pas.
+- **A11Y-009 — lien « GitHub » du bandeau, débordement horizontal à
+  320 px + 200 % : requalifiée au Lot 10.3, non bloquante.** Trouvée
+  uniquement via le contrôle CSS complémentaire (`document.documentElement.
+  style.zoom`, voir A11Y-003) : le lien "GitHub" du bandeau ne dispose
+  d'aucun point de coupure (nom propre) et le point de rupture responsive
+  de `#header-links` (`max-width: 767px`, réel) ne réduit pas sa taille de
+  police ni ne le fait passer sur plusieurs lignes — à 320 px de largeur
+  réelle combinés à un contenu visuellement doublé par le contrôle CSS, le
+  lien déborde du bandeau. **Décision humaine (Lot 10.3) : non reproduite
+  lors du contrôle manuel réel au zoom navigateur (100 %/200 %,
+  A11Y-003)** — requalifiée en observation issue du seul contrôle CSS
+  renforcé, pas en défaut confirmé au zoom navigateur réel. Reste ouverte
+  par prudence (le contrôle réel n'a pas couvert cette combinaison
+  largeur/page en détail), mais n'est plus traitée comme un défaut
+  bloquant. Root cause distincte de A11Y-008 (aucun `<code>` impliqué),
+  hors du périmètre « code inline » du Lot 10.2. Non corrigée.
+- **A11Y-010 — texte de paragraphe compressé par la largeur fixe du
+  sommaire à 768 px + 200 % : requalifiée au Lot 10.3, non bloquante.**
+  Trouvée uniquement via le contrôle CSS complémentaire : `#sidebar` a une
+  largeur fixe (230 px sous 767 px réels, 300 px au-dessus) ; combinée au
+  doublement visuel du contrôle CSS à 768 px, la colonne de contenu
+  (`#body-inner`) se retrouve mesurée à 116 px de large — trop étroite
+  pour qu'un mot de taille normale s'y case, y compris dans du texte
+  `<strong>` ordinaire en dehors de tout `<code>` ou tableau. **Décision
+  humaine (Lot 10.3) : non reproduite lors du contrôle manuel réel au
+  zoom navigateur (100 %/200 %, A11Y-003)** — requalifiée en observation
+  issue du seul contrôle CSS renforcé, pas en défaut confirmé au zoom
+  navigateur réel. Reste ouverte par prudence, mais n'est plus traitée
+  comme un défaut bloquant. Root cause structurelle (largeur fixe du
+  sommaire combinée à un contenu visuellement doublé), pas un défaut de
+  coupure de mot — hors du périmètre « code inline » du Lot 10.2. Non
+  corrigée.
+- **A11Y-011 — ordre de tabulation du menu mobile : confirmée et
+  explicitement acceptée comme dette non bloquante pour v1.0.0 (décision
+  humaine, Lot 10.3).** Au clavier, à largeur mobile (≤ 767 px réels), les
+  huit liens du sommaire (hors écran, `#sidebar` à `left:-230px` par
+  défaut) restent **atteignables par `Tab`** avant même le bouton
+  `#sidebar-toggle` qui les révèle visuellement — un utilisateur clavier
+  voit son focus disparaître pendant 10 pressions de touche (aucun
+  indicateur visible à l'écran) avant d'atteindre un élément visible.
+  Symétriquement, une fois le menu ouvert au clavier, `Tab` (en avant)
+  depuis le bouton ne mène pas dans le sommaire nouvellement visible (ces
+  liens sont plus tôt dans l'ordre du DOM) mais directement aux liens du
+  bandeau — `Shift+Tab` est nécessaire pour rejoindre le sommaire ouvert.
+  Par ailleurs, `Escape` ne referme pas le menu (seule une nouvelle
+  activation du bouton `#sidebar-toggle` le fait). Aucun piège clavier au
+  sens strict (tout reste atteignable, dans les deux sens), mais un ordre
+  de tabulation qui ne reflète pas l'ordre visuel pendant que le menu est
+  fermé — WCAG 2.4.3. **Constat confirmé, non réévalué au Lot 10.3 (pas
+  un artefact du contrôle CSS : reproduit par de vraies pressions de
+  touche, indépendant de tout zoom).** Correction explicitement différée à
+  une version ultérieure à v1.0.0 (déplacer le bouton plus tôt dans le DOM
+  ou retirer les liens du sommaire de l'ordre de tabulation tant qu'il est
+  fermé — `tabindex="-1"` géré en JavaScript — un changement de
+  comportement plus large qu'une correction ponctuelle) : **non corrigée
+  dans ce lot, sur décision explicite.**
 
 **Corrigé au Lot 10** (mesuré, vérifié après correction, hors numérotation
 A11Y puisque fermé dans le même lot que sa découverte) : langue du document
@@ -268,9 +425,26 @@ ajout de `default_lang: fr` à `grav/user/config/site.yaml`, WCAG 3.1.1) ;
 lien `#logo` sans nom accessible (`axe-core` `link-name` — ajout de
 `aria-label="Accueil"`, WCAG 2.4.4/4.1.2).
 
-A11Y-001 à A11Y-005 **doivent être fermées avant toute release publique**,
-mais ne bloquent pas la construction ni la consultation locale de ce site
-documentaire. Aucun outil `axe-core` n'a été exécuté avant le Lot 10 :
-l'absence d'erreur signalée par un outil automatisé ne constitue, dans tous
-les cas, jamais une certification WCAG complète — seuls les éléments et
-pages effectivement testés (listés ci-dessus) sont couverts.
+A11Y-001, A11Y-004, A11Y-005, A11Y-006, A11Y-007 et A11Y-008 (pour son
+périmètre exact : code inline) sont désormais fermées. A11Y-002 et A11Y-003
+sont complétées mais ne couvrent pas 100 % de leur périmètre respectif.
+
+**Décision humaine enregistrée le jour du Lot 10.3** (contrôle manuel réel
+au zoom navigateur, 100 % et 200 %, hors de cette session automatisée :
+aucun défaut bloquant constaté) : A11Y-009 et A11Y-010, trouvées
+uniquement via le contrôle CSS complémentaire et non reproduites lors de
+ce contrôle réel, sont **requalifiées en observations issues du seul
+contrôle CSS renforcé** — elles restent ouvertes par prudence mais ne
+sont plus traitées comme des défauts confirmés au zoom navigateur réel.
+A11Y-011 (ordre de tabulation du menu mobile), constat indépendant du
+zoom et reproduit par de vraies pressions de touche, est **confirmée et
+explicitement acceptée comme dette non bloquante pour v1.0.0** ; sa
+correction est différée à une version ultérieure. Aucune de ces trois
+dettes n'est une condition de ce lot ni du suivant, et aucune ne bloque
+la construction ni la consultation locale de ce site documentaire.
+
+**Aucune certification WCAG globale n'est revendiquée** : ni le contrôle
+automatisé (axe-core, mesures de contraste, recette clavier scriptée) ni
+le contrôle manuel réel (zoom navigateur, non détaillé page par page)
+ne couvrent l'ensemble des pages et composants du site — seuls les
+éléments et pages effectivement contrôlés, listés ci-dessus, le sont.

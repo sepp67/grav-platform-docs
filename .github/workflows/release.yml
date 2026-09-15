@@ -1,0 +1,161 @@
+name: Release
+
+# Lot 10.1, section G ; workflow_dispatch ajouté au Lot 10.2, section 6.
+# Publication déclenchée exclusivement par un tag SemVer strict (vX.Y.Z) —
+# c'est le SEUL déclencheur qui atteint jamais le job `publish` (voir sa
+# condition `if:` ci-dessous). Deux jobs séparés, le second dépendant
+# explicitement du premier (needs: test) : la suite complète
+# (tests/run-all.sh) doit réussir avant que quoi que ce soit ne soit
+# publié — une image ne peut donc jamais être poussée avant validation,
+# même en cas d'exécution parallèle par GitHub Actions. Ne publie jamais
+# "latest" : docker/metadata-action n'émet ici qu'un seul tag,
+# pattern={{version}}, et aucune entrée "latest" n'est déclarée nulle part
+# dans ce fichier.
+#
+# workflow_dispatch : exécution manuelle de VALIDATION SEULE, jamais de
+# publication. Lance la même validation SemVer (sur une valeur simulée,
+# fournie en entrée, faute d'un vrai tag à valider hors d'un push de tag)
+# et la suite complète de tests — utile pour vérifier que le job `test`
+# passe avant de pousser un tag réel, sans jamais publier quoi que ce
+# soit. Le job `publish` porte une condition explicite
+# (`github.event_name == 'push' && github.ref_type == 'tag'`) qui exclut
+# structurellement tout déclenchement manuel, même si l'exécution est
+# lancée en ciblant un ref de type tag dans l'interface GitHub — seul un
+# véritable événement de push de tag peut publier.
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
+    inputs:
+      simulated_tag:
+        description: "Tag SemVer simulé pour valider la logique de ce workflow sans publier (ex. v1.0.0)"
+        required: false
+        default: "v1.0.0"
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: sepp67/grav-platform-docs
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+
+    outputs:
+      version: ${{ steps.semver.outputs.version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # Le déclencheur push filtre déjà sur un motif proche de SemVer, mais
+      # un motif de déclencheur GitHub Actions n'est pas une regex complète
+      # (ex. "v1.0.0-rc.1" ou "v01.0.0" pourraient le satisfaire selon les
+      # cas). Vérification explicite et stricte X.Y.Z ici, comme demandé,
+      # avant tout build. Sur workflow_dispatch (pas de tag réel), la même
+      # logique est rejouée sur la valeur simulée fournie en entrée — c'est
+      # une validation de la logique elle-même, jamais une substitution à
+      # la vérification du vrai tag (le job publish reste de toute façon
+      # inatteignable depuis ce déclencheur, voir sa condition `if:`).
+      - name: Validate SemVer tag format (X.Y.Z) — real tag, or simulated value on manual dispatch
+        id: semver
+        env:
+          RAW_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.simulated_tag || github.ref_name }}
+        run: |
+          tag="$RAW_TAG"
+          if ! printf '%s' "$tag" | grep -Eq '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$'; then
+            echo "::error::tag '$tag' n'est pas un SemVer strict vX.Y.Z (pas de préfixe/suffixe autorisé)"
+            exit 1
+          fi
+          version="${tag#v}"
+          echo "tag SemVer valide : $tag -> version $version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GitHub Container Registry (pull only)
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build image and run full test suite (tests/run-all.sh)
+        env:
+          GRAV_PLATFORM_DOCS_TEST_IMAGE: grav-platform-docs:release-candidate
+        run: sh tests/run-all.sh
+
+  publish:
+    name: publish
+    needs: test
+    runs-on: ubuntu-latest
+
+    # Seul un véritable push de tag SemVer publie — jamais un
+    # workflow_dispatch, y compris si celui-ci est lancé en ciblant un ref
+    # de type tag depuis l'interface GitHub (github.ref_type serait alors
+    # 'tag' aussi : c'est github.event_name qui tranche ici, jamais 'push'
+    # pour un déclenchement manuel).
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Record build timestamp (OCI created label)
+        id: created
+        run: echo "date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      # pattern={{version}} uniquement : un seul tag publié, X.Y.Z (sans le
+      # préfixe "v", conforme à la convention déjà en place dans ce
+      # dépôt — voir Dockerfile). Aucune entrée "latest", "major" ou
+      # "major.minor" : seule la version exacte du tag est publiée.
+      - name: Extract Docker metadata
+        id: metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ needs.test.outputs.version }}
+            org.opencontainers.image.created=${{ steps.created.outputs.date }}
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          platforms: linux/amd64
+
+      - name: Write digest to job summary
+        run: |
+          {
+            echo "### Image publiée"
+            echo ""
+            echo "- Tag : \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.test.outputs.version }}\`"
+            echo "- Digest : \`${{ steps.build.outputs.digest }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,46 @@
+name: CI
+
+# Lot 10.1, section F. Distinct de release.yml : ce workflow ne publie
+# jamais d'image, sur aucun registre — il valide uniquement le build et la
+# suite de tests complète (tests/run-all.sh) à chaque pull request vers
+# main et à chaque push sur main. Seul release.yml, déclenché exclusivement
+# par un tag SemVer, publie sur GHCR (voir docs/testing.md).
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # Lecture seule, uniquement pour tirer l'image de base privée
+      # ghcr.io/sepp67/grav-runtime (voir Dockerfile) — ce workflow ne
+      # publie jamais rien, packages: read suffit et packages: write
+      # n'est jamais accordé ici.
+      - name: Log in to GitHub Container Registry (pull only)
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # tests/run-all.sh construit l'image lui-même, en premier lieu
+      # (tests/test-build.sh), avant les tests applicatifs — pas de
+      # `docker build` séparé ici : il serait redondant et testerait une
+      # image différente de celle que les tests utilisent réellement.
+      - name: Build image and run full test suite (tests/run-all.sh)
+        env:
+          GRAV_PLATFORM_DOCS_TEST_IMAGE: grav-platform-docs:ci
+        run: sh tests/run-all.sh

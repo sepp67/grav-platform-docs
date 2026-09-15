@@ -1,0 +1,40 @@
+{#
+  Surcharge de user/themes/learn2/templates/docs.html.twig
+  (Learn2 1.8.3, commit 22b7f1e2d4a024b105399f912124fc901f807d7a).
+
+  Copie intégrale du fichier vendorisé — même limite d'héritage Twig par
+  bloc que templates/partials/base.html.twig (voir son commentaire de
+  tête) : `{% extends 'docs.html.twig' %}` depuis un fichier portant lui-
+  même ce nom, dans le thème enfant, se résoudrait sur lui-même plutôt que
+  sur l'original Learn2 (chaînage de flux `theme://`, résolution par
+  premier match). Une seule déviation, dans le bloc "navigation" (Lot
+  10.1, recette d'accessibilité) : les liens précédent/suivant portent
+  désormais un aria-label nommant explicitement la page ciblée —
+  l'original ne leur donne aucun nom accessible (icône seule), constaté
+  par axe-core ("link-name", impact serious). Présentation visuelle
+  inchangée (mêmes classes, même icône). Tout le reste du fichier est
+  identique à l'original.
+#}
+{% extends 'partials/base.html.twig' %}
+{% set tags = page.taxonomy.tag %}
+{% if tags %}
+    {% set progress = page.collection({'items':{'@taxonomy':{'category': 'docs', 'tag': tags}},'order': {'by': 'default', 'dir': 'asc'}}) %}
+{% else %}
+    {% set progress = page.collection({'items':{'@taxonomy':{'category': 'docs'}},'order': {'by': 'default', 'dir': 'asc'}}) %}
+{% endif %}
+
+{% block navigation %}
+	<div id="navigation">
+	{% if not progress.isFirst(page.path) %}
+	    <a class="nav nav-prev" href="{{ progress.nextSibling(page.path).url }}" aria-label="Page précédente : {{ progress.nextSibling(page.path).title }}"> <i class="fa fa-chevron-left"></i></a>
+	{% endif %}
+
+	{% if not progress.isLast(page.path) %}
+	    <a class="nav nav-next" href="{{ progress.prevSibling(page.path).url }}" aria-label="Page suivante : {{ progress.prevSibling(page.path).title }}"><i class="fa fa-chevron-right"></i></a>
+	{% endif %}
+	</div>
+{% endblock %}
+
+{% block content %}
+    {% include 'partials/page.html.twig' %}
+{% endblock %}
