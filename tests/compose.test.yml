@@ -1,0 +1,29 @@
+# Compose utilisé UNIQUEMENT par tests/test-update-rollback.sh — jamais pour
+# le développement (voir compose.dev.yml à la racine) ni pour la production
+# (générée par ansible-role-grav-site). Volumes nommés par projet Compose
+# pour ne jamais entrer en collision avec compose.dev.yml.
+
+services:
+  grav:
+    image: "${GRAV_PLATFORM_DOCS_TEST_IMAGE:-grav-platform-docs:test}"
+    container_name: grav-platform-docs-test-stack
+
+    environment:
+      GRAV_ADMIN_USER: admin
+      GRAV_ADMIN_PASSWORD: ChangeMe123
+      GRAV_ADMIN_EMAIL: admin@example.com
+
+    ports:
+      - "18085:80"
+
+    volumes:
+      - pages_data:/var/www/html/user/pages
+      - accounts_data:/var/www/html/user/accounts
+      - data_data:/var/www/html/user/data
+      - images_data:/var/www/html/user/images
+
+volumes:
+  pages_data:
+  accounts_data:
+  data_data:
+  images_data:

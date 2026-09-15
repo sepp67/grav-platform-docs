@@ -16,6 +16,8 @@ tests/
 ├── test-app-presence.sh
 ├── test-contact-form.sh
 ├── test-secrets.sh
+├── test-update-rollback.sh # Lot 10 — mise à jour A→B et rollback B→A, 4 volumes
+├── compose.test.yml        # utilisé uniquement par test-update-rollback.sh
 └── run-all.sh              # orchestrateur, s'arrête au premier échec
 ```
 
@@ -33,6 +35,7 @@ Chaque script échoue explicitement (code de sortie non nul) au premier
 | `test-internal-links.sh` | Explore chaque page publiée et vérifie que tout lien interne de contenu (zone `#body-inner`, pas la barre latérale) répond HTTP 200 — garde de non-régression ajoutée au Lot 8 après la découverte de 99 liens internes cassés. |
 | `test-contact-form.sh` | Formulaire affiché sur `/contact` avec ses champs (nom, e-mail, téléphone, message, honeypot) ; soumission avec champ obligatoire manquant rejetée ; soumission avec honeypot rempli rejetée ; soumission valide, via un SMTP factice local (Mailpit, aucun e-mail réel envoyé), redirige vers `/contact/confirmation` et le message est reçu par le SMTP factice. |
 | `test-secrets.sh` | Aucune valeur de test/placeholder connue dans les couches de l'image exportée ; `user/config/email-private.php` absent de l'image (jamais construit, voir `.dockerignore`). |
+| `test-update-rollback.sh` | **Ajouté au Lot 10.** Mise à jour d'image A→B puis rollback B→A (image B construite depuis une copie temporaire avec un marqueur CSS, jamais les fichiers réels du dépôt) : les 4 répertoires persistants (`pages`, `accounts`, `data`, `images`) ne sont jamais perdus ; le code actif correspond bien à l'image en service à chaque étape ; site et formulaire de contact restent accessibles après chaque bascule. |
 
 ## Note sur le bootstrap admin dans les tests
 
@@ -94,11 +97,16 @@ rapport du Lot 1).
 
 ## Ce qui n'est pas automatisé à ce stade
 
-Pas de test de mise à jour/rollback d'image (pas encore de seconde version
-publiée), pas de test de dérive `grav-sites-ops` (déploiement hors périmètre
-de ce dépôt — cahier §2), pas de `markdownlint` ni de linter Twig (voir
-ci-dessus), pas de vérification visuelle (voir VISUAL-001). Le test de
-persistance du seed (première initialisation puis redémarrage sans
-écrasement) est couvert par `test-app-presence.sh`, qui redémarre le même
-conteneur et vérifie l'absence de réinitialisation — pas par un script
-dédié.
+Pas de test de dérive `grav-sites-ops` (déploiement hors périmètre de ce
+dépôt — cahier §2), pas de `markdownlint` ni de linter Twig (voir
+ci-dessus). Le test de persistance du seed (première initialisation puis
+redémarrage sans écrasement) est couvert par `test-app-presence.sh`, qui
+redémarre le même conteneur et vérifie l'absence de réinitialisation — pas
+par un script dédié. La mise à jour/rollback d'image **est** désormais
+testée (`test-update-rollback.sh`, Lot 10) — la seconde version testée est
+simulée (marqueur CSS), pas une release réellement publiée, ce que
+`docs/architecture.md`/le rapport du Lot 10 précisent explicitement.
+Vérification visuelle : voir VISUAL-001 ci-dessus — une recette manuelle
+partielle a été réalisée au Lot 10 (captures jetables, jamais commitées),
+dont le résultat est consigné dans le rapport de ce lot, pas dans ce
+fichier.
