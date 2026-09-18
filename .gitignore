@@ -22,5 +22,4 @@ tests/**/*.actual
 .vscode/
 .idea/
 .DS_Store
-CLAUDE.md
 ressources/
